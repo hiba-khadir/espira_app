@@ -1,0 +1,32 @@
+{
+  "name": "mobile_app",
+  "version": "1.0.0",
+  "main": "app/index.tsx",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hiba-khadir/espira_app.git"
+  },
+  "author": "hiba-khadir",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hiba-khadir/espira_app/issues"
+  },
+  "homepage": "https://github.com/hiba-khadir/espira_app#readme",
+  "description": "",
+  "dependencies": {
+    "mysql2": "^3.20.0",
+    "nodemon": "^3.1.14",
+    "process": "^0.11.10",
+    "typescript": "^6.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.2",
+    "prisma": "^7.6.0"
+  }
+}

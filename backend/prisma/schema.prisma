@@ -1,0 +1,112 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+// schema
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  isVerified   Boolean  @default(false) @map("is_verified")
+  otpCode     String   @map("otp_code")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  devices      Device[]
+  deviceHistories DeviceHistory[] @relation("actor")
+}
+
+model DeviceSubtype {
+  id               Int      @id @default(autoincrement())
+  name             String   @unique
+  type             DeviceType
+  unit             String?
+  supportsIntensity Boolean @default(false) @map("supports_intensity")
+  supportsColor     Boolean @default(false) @map("supports_color")
+
+  devices          Device[]
+}
+
+enum DeviceType {
+  sensor
+  actuator
+}
+
+model Device {
+  id               Int       @id @default(autoincrement())
+  name             String
+  subtypeId        Int       @map("subtype_id")
+  subtype          DeviceSubtype @relation(fields: [subtypeId], references: [id])
+  stateTopic       String    @map("state_topic")
+  controlTopic     String?   @map("control_topic")
+  connectionStatus ConnectionStatus @default(unavailable) @map("connection_status")
+  lastSeen         DateTime? @map("last_seen")
+  userId           String?   @map("user_id")
+  user             User?     @relation(fields: [userId], references: [id])
+  createdAt        DateTime  @default(now()) @map("created_at")
+
+  actuatorState    ActuatorState?
+  sensorState      SensorState?
+  deviceHistories  DeviceHistory[]
+}
+
+enum ConnectionStatus {
+  online
+  offline
+  error
+  unavailable
+}
+
+model ActuatorState {
+  deviceId     Int      @id @map("device_id")
+  device       Device   @relation(fields: [deviceId], references: [id])
+  isOn         Boolean  @default(false) @map("is_on")
+  intensity    Int?     @default(0)
+  colorHex     String?  @map("color_hex")
+  lastUpdated  DateTime @map("last_updated")
+}
+
+model SensorState {
+  deviceId    Int      @id @map("device_id")
+  device      Device   @relation(fields: [deviceId], references: [id])
+  value       Float
+  unit        String?
+  lastUpdated DateTime @map("last_updated")
+}
+
+model DeviceHistory {
+  id         Int       @id @default(autoincrement())
+  deviceId   Int       @map("device_id")
+  device     Device    @relation(fields: [deviceId], references: [id])
+  actionType ActionType @map("action_type")
+  oldValue   String?   @map("old_value")
+  newValue   String?   @map("new_value")
+  source     Source
+  actorId    String?   @map("actor_id")
+  actor      User?     @relation("actor", fields: [actorId], references: [id])
+  recordedAt DateTime  @default(now()) @map("recorded_at")
+}
+
+enum ActionType {
+  turned_on
+  turned_off
+  intensity_change
+  color_change
+  sensor_reading
+  disconnected
+  reconnected
+}
+
+enum Source {
+  user
+  system
+}
