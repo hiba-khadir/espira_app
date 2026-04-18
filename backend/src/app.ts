@@ -1,25 +1,22 @@
-const express = require("express");
-const cors = require("cors");
-const path = require("path");
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
 
 
-//user authentification router
-const authRoute = require("./routes/auth.router.js");
-const authenticateToken = require("./middleware/auth.middelware.js");
+/*routes and auth */
+import authenticateToken from './middleware/auth.middleware.js';
+import deviceRoutes from './routes/device.router.js';
+import authRoute from "./routes/auth.router.js";
 
-
-//devices router
-const deviceRoutes = require("./routes/device.router.js");
 const app = express();
 
 //stats router
 
 
 //frontend connection
-/*
 app.use(cors({
     origin: 'http://localhost:5173'  //accept requests from the app's frontend only
-}));*/
+}));
 
 //extend files limit and use expess.json 
 app.use(express.json({ limit: '50mb' }));

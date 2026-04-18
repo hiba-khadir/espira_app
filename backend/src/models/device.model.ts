@@ -1,9 +1,10 @@
-const { PrismaClient } = require('../../generated/prisma');
+import { PrismaClient, ConnectionStatus, DeviceType } from '../generated/prisma';
+import {UpdateDeviceData , UpdateDeviceStateData , DeviceFilters, CreateDeviceData} from '../types/custom'
+
 const prisma = new PrismaClient();
-
-
 // GET /api/devices
-const getAllDevices = (userId, { status, type, state } = {}) => {
+const getAllDevices = (userId: string, filters: DeviceFilters = {}) => {
+  const { status, type, state } = filters;
   return prisma.device.findMany({
     where: {
       userId,
@@ -21,7 +22,7 @@ const getAllDevices = (userId, { status, type, state } = {}) => {
 };
 
 // GET /api/devices/:id
-const getDeviceById = async (deviceId, userId) => {
+const getDeviceById = async (deviceId: number, userId: string) => {
   return prisma.device.findFirst({
     where: { id: deviceId, userId },
     include: {
@@ -33,23 +34,21 @@ const getDeviceById = async (deviceId, userId) => {
 };
 
 // POST /api/devices
-const createDevice = async (userId, data) => {
+const createDevice = async (userId: string, data: CreateDeviceData) => {
   const { name, subtypeId, stateTopic, controlTopic } = data;
-  //get subtype to know sensor or actuator
   const subtype = await prisma.deviceSubtype.findUnique({
     where: { id: subtypeId }
   });
   if (!subtype) return null;
 
-  return prisma.device.create({  //create the device entry
+  return prisma.device.create({
     data: {
       name,
       subtypeId,
       stateTopic,
       controlTopic,
       userId,
-      //create a corresponding state entry based on type
-      ...(subtype.type === 'actuator' && {
+      ...(subtype.type === DeviceType.actuator && {
         actuatorState: {
           create: {
             isOn: false,
@@ -59,7 +58,7 @@ const createDevice = async (userId, data) => {
           }
         }
       }),
-      ...(subtype.type === 'sensor' && {
+      ...(subtype.type === DeviceType.sensor && {
         sensorState: {
           create: {
             value: 0,
@@ -78,7 +77,7 @@ const createDevice = async (userId, data) => {
 };
 
 // PUT /api/devices/:id
-const updateDevice = async (deviceId, userId, data) => {
+const updateDevice = async (deviceId: number, userId: string, data: UpdateDeviceData) => {
   const { name, stateTopic, controlTopic } = data;
   return prisma.device.updateMany({
     where: { id: deviceId, userId },
@@ -87,14 +86,14 @@ const updateDevice = async (deviceId, userId, data) => {
 };
 
 // DELETE /api/devices/:id
-const deleteDevice = (deviceId, userId) => {
+const deleteDevice = (deviceId: number, userId: string) => {
   return prisma.device.deleteMany({
     where: { id: deviceId, userId }
   });
 };
 
 // GET /api/devices/:id/state
-const getDeviceState = (deviceId, userId) => {
+const getDeviceState = (deviceId: number, userId: string) => {
   return prisma.device.findFirst({
     where: { id: deviceId, userId },
     select: {
@@ -104,10 +103,8 @@ const getDeviceState = (deviceId, userId) => {
   });
 };
 
-// PUT /api/devices/:id/state  (actuator only)
-// remaining to do : handle state update in db triggered by mqtt service ,
-// and pub to mqtt when state is changed
-const updateDeviceState = async (deviceId, userId, data) => {
+// PUT /api/devices/:id/state (actuator only)
+const updateDeviceState = async (deviceId: number, userId: string, data: UpdateDeviceStateData) => {
   const { isOn, intensity, colorHex } = data;
   const device = await prisma.device.findFirst({
     where: { id: deviceId, userId }
@@ -119,10 +116,10 @@ const updateDeviceState = async (deviceId, userId, data) => {
     data: { isOn, intensity, colorHex, lastUpdated: new Date() }
   });
   return device;
-}
+};
 
 // GET /api/devices/:id/history
-const getDeviceHistory = (deviceId, userId, max) => {
+const getDeviceHistory = (deviceId: number, userId: string, max?: string) => {
   return prisma.device.findFirst({
     where: { id: deviceId, userId },
     select: {
@@ -135,13 +132,14 @@ const getDeviceHistory = (deviceId, userId, max) => {
 };
 
 // GET /api/devices/:id/subtype
-const getDeviceSubtype = (deviceId, userId) => {
+const getDeviceSubtype = (deviceId: number, userId: string) => {
   return prisma.device.findFirst({
     where: { id: deviceId, userId },
     select: { subtype: true }
   });
 };
 
-module.exports = {getAllDevices, getDeviceById, createDevice, updateDevice, deleteDevice, getDeviceState,
-  updateDeviceState, getDeviceHistory, getDeviceSubtype,
+export {
+  getAllDevices, getDeviceById, createDevice, updateDevice, deleteDevice,
+  getDeviceState, updateDeviceState, getDeviceHistory, getDeviceSubtype,
 };

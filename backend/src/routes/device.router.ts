@@ -4,6 +4,7 @@ import {
   getDeviceSubtypeController,
 } from '../controllers/device.controller.js'
 
+import express from 'express';
 
 const router = express.Router();
 
@@ -17,4 +18,4 @@ router.put('/:id/state', updateDeviceStateController)
 router.get('/:id/history',  getDeviceHistoryController)
 router.get('/:id/subtype',  getDeviceSubtypeController)
 
-module.exports = router;
+export default router;

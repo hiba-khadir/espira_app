@@ -1,0 +1,169 @@
+### Variables
+@baseUrl = http://localhost:3000/api
+@token = token
+@deviceId = 1
+
+###
+
+### GET all devices
+GET {{baseUrl}}/devices
+Authorization: Bearer {{token}}
+
+###
+
+### GET all devices - filter by status
+GET {{baseUrl}}/devices?status=online
+Authorization: Bearer {{token}}
+
+###
+
+### GET all devices - filter by type
+GET {{baseUrl}}/devices?type=sensor
+Authorization: Bearer {{token}}
+
+###
+
+### GET all devices - filter by state
+GET {{baseUrl}}/devices?state=on
+Authorization: Bearer {{token}}
+
+###
+
+### POST create actuator device
+POST {{baseUrl}}/devices
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Main Led Light",
+  "subtypeId": 1,
+  "stateTopic": "devices/1/state",
+  "controlTopic": "devices/1/control"
+}
+
+###
+
+### POST create sensor device
+POST {{baseUrl}}/devices
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Temperature Sensor",
+  "subtypeId": 2,
+  "stateTopic": "devices/2/state"
+}
+
+###
+
+### POST create device - missing required fields (should return 400)
+POST {{baseUrl}}/devices
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Incomplete Device"
+}
+
+###
+
+### GET device by id
+GET {{baseUrl}}/devices/{{deviceId}}
+Authorization: Bearer {{token}}
+
+###
+
+### GET device by id - wrong id (should return 404)
+GET {{baseUrl}}/devices/9999
+Authorization: Bearer {{token}}
+
+###
+
+### PUT update device
+PUT {{baseUrl}}/devices/{{deviceId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Updated Light",
+  "stateTopic": "devices/1/state",
+  "controlTopic": "devices/1/control"
+}
+
+###
+
+### GET device state
+GET {{baseUrl}}/devices/{{deviceId}}/state
+Authorization: Bearer {{token}}
+
+###
+
+### PUT update device state - turn on
+PUT {{baseUrl}}/devices/{{deviceId}}/state
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "isOn": true,
+  "intensity": 80,
+  "colorHex": "#FF5733"
+}
+
+###
+
+### PUT update device state - turn off
+PUT {{baseUrl}}/devices/{{deviceId}}/state
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "isOn": false
+}
+
+###
+
+### PUT update device state - missing isOn (should return 400)
+PUT {{baseUrl}}/devices/{{deviceId}}/state
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "intensity": 50
+}
+
+###
+
+### GET device history
+GET {{baseUrl}}/devices/{{deviceId}}/history
+Authorization: Bearer {{token}}
+
+###
+
+### GET device history with max
+GET {{baseUrl}}/devices/{{deviceId}}/history?max=5
+Authorization: Bearer {{token}}
+
+###
+
+### GET device subtype
+GET {{baseUrl}}/devices/{{deviceId}}/subtype
+Authorization: Bearer {{token}}
+
+###
+
+### DELETE device
+DELETE {{baseUrl}}/devices/{{deviceId}}
+Authorization: Bearer {{token}}
+
+###
+
+### DELETE device - wrong id (should return 404)
+DELETE {{baseUrl}}/devices/9999
+Authorization: Bearer {{token}}
+
+###
+
+### No token (should return 401)
+GET {{baseUrl}}/devices
+
+###
