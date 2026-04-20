@@ -1,0 +1,8 @@
+### Variables
+@baseUrl = http://localhost:3000/api
+@token = token
+@deviceId = id1
+
+### POST create actuator device
+GET {{baseUrl}}/stats/devices/status
+Authorization: Bearer {{token}}
