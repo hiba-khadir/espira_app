@@ -118,7 +118,10 @@ const getDeviceHistoryController = async (req: Request, res: Response): Promise<
     const deviceId = parseInt(req.params.id as string);
     const max = req.query.max as string | undefined;
     const history = await getDeviceHistory(deviceId, userId, max);
-    if (!history) { res.status(404).json({ message: 'Device not found' }); return; }
+    if (!history) {
+      res.status(404).json({ message: 'Device not found' }); 
+      return;
+    }
     res.status(200).json(history.deviceHistories);
   } catch (err: any) {
     res.status(500).json({ message: err.message });
