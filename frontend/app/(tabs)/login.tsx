@@ -100,7 +100,6 @@ const LoginScreen = () => {
               />
               {/* Separator Line */}
             <View style={styles.separator} />
-            <Text style={styles.error_message}>Phone number incorrect</Text>
             </View>
 
             {/* Password Input */}
@@ -126,7 +125,6 @@ const LoginScreen = () => {
                 </TouchableOpacity>
                 {/* Separator Line */}
                 <View style={styles.separator} />
-                <Text style={styles.error_message}>Phone number and Password don’t match</Text>
               </View>
             </View>
 
@@ -234,6 +232,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   input: {
+    borderWidth: 0,
+    borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 16,
@@ -260,14 +260,6 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: '#E7E3E0',
     marginVertical: 20, // Space above and below the line
-  },
-
-    error_message: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#FF383C',
-    letterSpacing: 1,
-    // fontFamily:'Poppins-SemiBold',
   },
 
   forgotPasswordContainer: {
@@ -315,3 +307,5 @@ const styles = StyleSheet.create({
 });
 
 export default LoginScreen;
+
+
