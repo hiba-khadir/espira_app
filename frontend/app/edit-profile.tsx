@@ -39,7 +39,7 @@ export default function EditProfileScreen() {
   const [password, setPassword] = useState("••••••••••••••••");
 
   return (
-    <SafeAreaView className="flex-1 bg-[#FAFAFA]">
+    <SafeAreaView className="flex-1 bg-white">
       <ScrollView 
         contentContainerStyle={{ paddingBottom: 40 }} 
         showsVerticalScrollIndicator={false}
