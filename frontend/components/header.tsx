@@ -3,7 +3,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export const Header: React.FC = () => (
+const Header: React.FC = () => (
   <View style={styles.header}>
     <View>
       <Text style={styles.headerTitle}>Hi Mahmoud</Text>
@@ -51,3 +51,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+export default Header;

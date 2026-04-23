@@ -2,13 +2,8 @@ import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 import Illustration from "../../assets/images/illustrations.svg";
-
-import {
-    ControlsSection,
-    Header,
-    HeroCard,
-    MetricsSection,
-} from "@/components/index";
+import Header from "@/components/header";
+import { ControlsSection, HeroCard, MetricsSection } from "@/components/index";
 
 export default function App() {
   const [lightEnabled, setLightEnabled] = useState(true);
