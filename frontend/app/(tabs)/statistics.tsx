@@ -40,169 +40,239 @@ const hData = months.map((m, i) => ({ x: m, y: humidity[i] }));
 const tData = months.map((m, i) => ({ x: m, y: temperature[i] }));
 export function Graphs() {
   return (
-    <View style={styles.card}>
-      <View style={styles.header}>
-        <View style={styles.legend}>
-          <View style={styles.legendItem}>
-            <View style={[styles.dot, { backgroundColor: "#5ec4e6" }]} />
-            <Text style={styles.legendLabel}>Humidity</Text>
+    <Container title="graphs">
+      <View>
+        <View style={styles.header}>
+          <View style={styles.legend}>
+            <View style={styles.legendItem}>
+              <View style={[styles.dot, { backgroundColor: "#5ec4e6" }]} />
+              <Text style={styles.legendLabel}>Humidity</Text>
+            </View>
+            <View style={styles.legendItem}>
+              <View style={[styles.dot, { backgroundColor: "#4caf7d" }]} />
+              <Text style={styles.legendLabel}>Temperature</Text>
+            </View>
           </View>
-          <View style={styles.legendItem}>
-            <View style={[styles.dot, { backgroundColor: "#4caf7d" }]} />
-            <Text style={styles.legendLabel}>Temperature</Text>
-          </View>
+
+          <TouchableOpacity style={styles.datePill}>
+            {calendarEvent()}
+            <Text style={styles.datePillText}>Jan 2026 – Dec 2026</Text>
+          </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.datePill}>
-          {calendarEvent()}
-          <Text style={styles.datePillText}>Jan 2026 – Dec 2026</Text>
-        </TouchableOpacity>
+        <VictoryChart
+          height={280}
+          padding={{ top: 16, bottom: 40, left: 44, right: 24 }}
+          domain={{ y: [0, 260] }}
+        >
+          <VictoryAxis
+            tickValues={months}
+            tickFormat={(t) => t}
+            style={{
+              axis: { stroke: "transparent" },
+              ticks: { stroke: "transparent" },
+              tickLabels: {
+                fontSize: 10,
+                fill: "#a0b8a8",
+                fontFamily: "System",
+              },
+              grid: { stroke: "transparent" },
+            }}
+          />
+          <VictoryAxis
+            dependentAxis
+            tickValues={[0, 50, 100, 150, 200, 250]}
+            style={{
+              axis: { stroke: "transparent" },
+              ticks: { stroke: "transparent" },
+              tickLabels: {
+                fontSize: 10,
+                fill: "#a0b8a8",
+                fontFamily: "System",
+              },
+              grid: { stroke: "rgba(0,0,0,0.07)", strokeDasharray: "0" },
+            }}
+          />
+
+          <VictoryArea
+            data={hData}
+            interpolation="catmullRom"
+            style={{
+              data: {
+                fill: "rgba(94,196,230,0.15)",
+                stroke: "#5ec4e6",
+                strokeWidth: 2.5,
+              },
+            }}
+          />
+
+          <VictoryArea
+            data={tData}
+            interpolation="catmullRom"
+            style={{
+              data: {
+                fill: "rgba(76,175,125,0.15)",
+                stroke: "#3d8f5e",
+                strokeWidth: 2.5,
+              },
+            }}
+          />
+        </VictoryChart>
       </View>
-
-      <VictoryChart
-        height={280}
-        padding={{ top: 16, bottom: 40, left: 44, right: 24 }}
-        domain={{ y: [0, 260] }}
-      >
-        <VictoryAxis
-          tickValues={months}
-          tickFormat={(t) => t}
-          style={{
-            axis: { stroke: "transparent" },
-            ticks: { stroke: "transparent" },
-            tickLabels: {
-              fontSize: 10,
-              fill: "#a0b8a8",
-              fontFamily: "System",
-            },
-            grid: { stroke: "transparent" },
-          }}
-        />
-        <VictoryAxis
-          dependentAxis
-          tickValues={[0, 50, 100, 150, 200, 250]}
-          style={{
-            axis: { stroke: "transparent" },
-            ticks: { stroke: "transparent" },
-            tickLabels: {
-              fontSize: 10,
-              fill: "#a0b8a8",
-              fontFamily: "System",
-            },
-            grid: { stroke: "rgba(0,0,0,0.07)", strokeDasharray: "0" },
-          }}
-        />
-
-        <VictoryArea
-          data={hData}
-          interpolation="catmullRom"
-          style={{
-            data: {
-              fill: "rgba(94,196,230,0.15)",
-              stroke: "#5ec4e6",
-              strokeWidth: 2.5,
-            },
-          }}
-        />
-
-        <VictoryArea
-          data={tData}
-          interpolation="catmullRom"
-          style={{
-            data: {
-              fill: "rgba(76,175,125,0.15)",
-              stroke: "#3d8f5e",
-              strokeWidth: 2.5,
-            },
-          }}
-        />
-      </VictoryChart>
+    </Container>
+  );
+}
+export function Container({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.text}>{title}</Text>
+      <View style={styles.card}>{children}</View>
     </View>
   );
 }
 const SIZE = 280;
 export function Chart() {
   return (
-    <View style={styles.card}>
-      <View style={styles.ChartCard}>
-        <View style={{ position: "relative" }}>
-          <VictoryPie
-            data={[
-              { x: "value", y: 70 },
-              { x: "empty", y: 30 },
-            ]}
-            width={SIZE}
-            height={SIZE}
-            radius={130}
-            innerRadius={120}
-            startAngle={-140}
-            endAngle={140}
-            cornerRadius={6}
-            style={{
-              parent: { position: "absolute", top: 160, left: 0 }, // ← add this
-              data: {
-                fill: ({ datum }) =>
-                  datum.x === "value" ? "#1a4a2a" : "#e5e7eb",
-              },
-            }}
-            labels={() => null}
-          />
-          <VictoryPie
-            data={[
-              { x: "value", y: 20 },
-              { x: "empty", y: 80 },
-            ]}
-            width={SIZE}
-            height={SIZE}
-            radius={100}
-            innerRadius={93}
-            startAngle={-140}
-            endAngle={140}
-            cornerRadius={6}
-            style={{
-              parent: { position: "absolute", top: -120, left: 0 }, // ← already here
-              data: {
-                fill: ({ datum }) =>
-                  datum.x === "value" ? "#4caf7d" : "#e5e7eb",
-              },
-            }}
-            labels={() => null}
-          />
+    <Container title="Charts">
+      <View>
+        <View style={styles.ChartCard}>
+          <View style={{ position: "relative" }}>
+            <VictoryPie
+              data={[
+                { x: "value", y: 70 },
+                { x: "empty", y: 30 },
+              ]}
+              width={SIZE}
+              height={SIZE}
+              radius={130}
+              innerRadius={120}
+              startAngle={-140}
+              endAngle={140}
+              cornerRadius={6}
+              style={{
+                parent: { position: "absolute", top: 160, left: 0 }, // ← add this
+                data: {
+                  fill: ({ datum }) =>
+                    datum.x === "value" ? "#1a4a2a" : "#e5e7eb",
+                },
+              }}
+              labels={() => null}
+            />
+            <VictoryPie
+              data={[
+                { x: "value", y: 20 },
+                { x: "empty", y: 80 },
+              ]}
+              width={SIZE}
+              height={SIZE}
+              radius={100}
+              innerRadius={93}
+              startAngle={-140}
+              endAngle={140}
+              cornerRadius={6}
+              style={{
+                parent: { position: "absolute", top: -120, left: 0 }, // ← already here
+                data: {
+                  fill: ({ datum }) =>
+                    datum.x === "value" ? "#4caf7d" : "#e5e7eb",
+                },
+              }}
+              labels={() => null}
+            />
 
-          <View
-            style={{
-              position: "absolute",
-              top: 30,
-              left: -10,
-              right: 0,
-              bottom: 0,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Text style={{ fontSize: 16, fontWeight: "500", color: "#111" }}>
-              lighting
-            </Text>
-            <Text style={{ fontSize: 14, color: "#4caf7d", marginTop: 2 }}>
-              20%
-            </Text>
+            <View
+              style={{
+                position: "absolute",
+                top: 30,
+                left: -10,
+                right: 0,
+                bottom: 0,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text style={{ fontSize: 16, fontWeight: "500", color: "#111" }}>
+                lighting
+              </Text>
+              <Text style={{ fontSize: 14, color: "#4caf7d", marginTop: 2 }}>
+                20%
+              </Text>
+            </View>
+          </View>
+        </View>
+        <View style={[styles.legend, { marginInline: 10 }]}>
+          <View style={[styles.legendRow, { gap: 10 }]}>
+            <View style={[styles.dot, { backgroundColor: "#1a4a2a" }]} />
+            <Text style={styles.legendText}>Lighting</Text>
+            <Text style={styles.legendValue}>30%</Text>
+          </View>
+          <View style={styles.Line} />
+          <View style={[styles.legendRow, { gap: 10 }]}>
+            <View style={[styles.dot, { backgroundColor: "#4caf7d" }]} />
+            <Text style={styles.legendText}>Moisture</Text>
+            <Text style={styles.legendValue}>50%</Text>
           </View>
         </View>
       </View>
-      <View style={styles.legend}>
-        <View style={styles.legendRow}>
-          <View style={[styles.dot, { backgroundColor: "#1a4a2a" }]} />
-          <Text style={styles.legendText}>Lighting</Text>
-          <Text style={styles.legendValue}>30%</Text>
-        </View>
-        <View style={styles.Line} />
-        <View style={styles.legendRow}>
-          <View style={[styles.dot, { backgroundColor: "#4caf7d" }]} />
-          <Text style={styles.legendText}>Moisture</Text>
-          <Text style={styles.legendValue}>50%</Text>
-        </View>
+    </Container>
+  );
+}
+function ProgressBar({
+  label,
+  value,
+  total,
+  hours,
+}: {
+  label: string;
+  value: number;
+  total: number;
+  hours: number;
+}) {
+  const percentage = (value / total) * 100;
+
+  return (
+    <View style={{ margin: 24 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginBottom: 8,
+        }}
+      >
+        <Text style={{ color: "#888", fontSize: 14 }}>{label}</Text>
+        <Text style={{ color: "#888", fontSize: 14 }}>{hours} h</Text>
+      </View>
+      <View
+        style={{
+          height: 10,
+          backgroundColor: "#1a4a2a",
+          borderRadius: 10,
+        }}
+      >
+        <View
+          style={{
+            width: `${percentage}%`,
+            height: "100%",
+            backgroundColor: "#4caf7d",
+            borderRadius: 10,
+          }}
+        />
       </View>
     </View>
+  );
+}
+export function DailyUsage() {
+  return (
+    <Container title="daily usage ">
+      <ProgressBar label="Light" value={15} total={24} hours={15} />
+      <ProgressBar label="Window" value={20} total={24} hours={20} />
+    </Container>
   );
 }
 export default function Statistics() {
@@ -212,15 +282,20 @@ export default function Statistics() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        <Text style={styles.text}>Graphs</Text>
         <Graphs></Graphs>
         <Chart></Chart>
+        <DailyUsage></DailyUsage>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: "column",
+    gap: 10,
+    marginBlock: 20,
+  },
   ChartCard: {
     height: 280,
     marginBlock: 10,
@@ -229,6 +304,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
+    marginInline: 20,
+    fontSize: 17,
+    textTransform: "capitalize",
     color: "#000000",
   },
   screen: {
@@ -239,7 +317,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 24,
     padding: 2,
-    marginTop: 100,
+    marginTop: 10,
     marginInline: 6,
     shadowColor: "#000",
     shadowOpacity: 0.06,
@@ -254,7 +332,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     marginBottom: 8,
   },
-  legend: { gap: 6, marginInline: 10 },
+  legend: { gap: 6 },
   legendItem: { flexDirection: "row", alignItems: "center", gap: 8 },
   dot: { width: 9, height: 9, borderRadius: 5 },
   legendLabel: { fontSize: 13, color: "#7a9a8a", fontWeight: "500" },
@@ -269,7 +347,6 @@ const styles = StyleSheet.create({
   },
   legendRow: {
     flexDirection: "row",
-    gap: 10,
     alignItems: "center",
     paddingVertical: 12,
   },
