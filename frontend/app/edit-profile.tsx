@@ -1,5 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import { Image } from "expo-image";
+
 import { useRouter } from "expo-router";
 import React, { useRef, useState } from "react";
 import { SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";

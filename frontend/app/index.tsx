@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, SafeAreaView, Dimensions, ActivityIndicator } from "react-native";
-import { Image } from "expo-image";
+import { View, Text, TouchableOpacity, SafeAreaView, Dimensions, ActivityIndicator, Image } from "react-native";
+
 import { useRouter, Redirect } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
