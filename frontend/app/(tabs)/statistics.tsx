@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Image } from "expo-image";
 import { Platform, StyleSheet, View, TouchableOpacity } from "react-native";
-
 import ParallaxScrollView from "@/components/parallax-scroll-view";
 import { Text } from "@react-navigation/elements";
 import Header from "@/components/header";
@@ -13,6 +12,7 @@ import {
   VictoryArea,
 } from "victory-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import calendarEvent from "@/components/ui/calendar";
 const months = [
   "Jan",
   "Feb",
@@ -36,7 +36,6 @@ const tData = months.map((m, i) => ({ x: m, y: temperature[i] }));
 export function Graphs() {
   return (
     <View style={styles.card}>
-      {/* Header */}
       <View style={styles.header}>
         <View style={styles.legend}>
           <View style={styles.legendItem}>
@@ -50,7 +49,8 @@ export function Graphs() {
         </View>
 
         <TouchableOpacity style={styles.datePill}>
-          <Text style={styles.datePillText}>🗓 Jan 2026 – Dec 2026 ⌄</Text>
+          {calendarEvent()}
+          <Text style={styles.datePillText}>Jan 2026 – Dec 2026</Text>
         </TouchableOpacity>
       </View>
 
@@ -152,6 +152,9 @@ const styles = StyleSheet.create({
   dot: { width: 9, height: 9, borderRadius: 5 },
   legendLabel: { fontSize: 13, color: "#7a9a8a", fontWeight: "500" },
   datePill: {
+    flexDirection: "row",
+    gap: 5,
+    alignItems: "center",
     backgroundColor: "#1a4a2a",
     borderRadius: 100,
     paddingHorizontal: 16,
