@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, SafeAreaView, Dimensions, ActivityIndicator, Image } from "react-native";
+import { Image } from "expo-image";
+import { View, Text, TouchableOpacity, Dimensions, ActivityIndicator } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useRouter, Redirect } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -33,13 +35,18 @@ export default function OnboardingScreen() {
   const [isFirstLaunch, setIsFirstLaunch] = useState<boolean | null>(null);
 
   useEffect(() => {
-    AsyncStorage.getItem("alreadyLaunched").then((value) => {
+    const checkFirstLaunch = async () => {
+      // TODO: Remove the next line after testing onboarding — it forces onboarding to show every time
+      await AsyncStorage.removeItem("alreadyLaunched");
+      
+      const value = await AsyncStorage.getItem("alreadyLaunched");
       if (value === null) {
         setIsFirstLaunch(true);
       } else {
         setIsFirstLaunch(false);
       }
-    });
+    };
+    checkFirstLaunch();
   }, []);
 
   if (isFirstLaunch === null) {
@@ -51,12 +58,12 @@ export default function OnboardingScreen() {
   }
 
   if (!isFirstLaunch) {
-    return <Redirect href="/(tabs)" />;
+    return <Redirect href="/(auth)/login" />;
   }
 
   const completeOnboarding = async () => {
     await AsyncStorage.setItem("alreadyLaunched", "true");
-    router.replace("/(tabs)");
+    router.replace("/(auth)/login");
   };
 
   const nextSlide = () => {
@@ -137,7 +144,7 @@ export default function OnboardingScreen() {
           <View className="flex-row items-center justify-center mb-4">
             <Text className="text-3xl font-bold text-[#1C5125] mr-2">Espira</Text>
             <Image
-              source={require("@/assets/images/Espira_logo.svg")}
+              source={require("@/assets/images/Espira logo.png")}
               style={{ width: 32, height: 32 }}
               contentFit="contain"
             />

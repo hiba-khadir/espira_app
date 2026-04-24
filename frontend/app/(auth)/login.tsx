@@ -1,25 +1,27 @@
 import React, { useState } from 'react';
+import { Image } from "expo-image";
 import { useFonts } from 'expo-font';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useRouter } from 'expo-router';
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  SafeAreaView,
   StatusBar,
   Alert,
-} from 'react-native';
+ } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { phonenumberValidator } from '../../helpers/phonenumberValidator';
 import { passwordValidator } from '../../helpers/passwordValidator';
 
 const LoginScreen = () => {
+  const router = useRouter();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -67,9 +69,8 @@ const LoginScreen = () => {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // If login successful
-      Alert.alert('Success', 'Login successful!');
-      // Navigate to home screen
+      // If login successful, navigate to home
+      router.replace('/(tabs)');
     } catch (error) {
       Alert.alert('Login Failed', 'Invalid phone number or password');
     } finally {
@@ -82,7 +83,7 @@ const LoginScreen = () => {
   };
 
   const handleSignUp = () => {
-    console.log('Sign up pressed');
+    router.push('/(auth)/sign_in');
   };
 
   return (
@@ -113,7 +114,7 @@ const LoginScreen = () => {
             <Image 
               source={require('../../assets/images/backround.png')}
               style={styles.picture1}
-              resizeMode='contain'
+              contentFit='contain'
             />
           </View>
 
@@ -231,7 +232,6 @@ const styles = StyleSheet.create({
     width: 68.12,
     height: 81,
     marginRight: 12,
-    resizeMode: 'contain',
   },
   appTitle: {
     fontSize: 42,
@@ -249,7 +249,6 @@ const styles = StyleSheet.create({
   picture1: {
     width: '100%',
     height: 200,
-    resizeMode: 'contain',
   },
   formContainer: {
     flex: 1,

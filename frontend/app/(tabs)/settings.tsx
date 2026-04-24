@@ -1,15 +1,15 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
-	Image,
 	Linking,
-	SafeAreaView,
 	ScrollView,
 	Text,
 	TouchableOpacity,
 	View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SettingsScreen() {
 	const router = useRouter();
@@ -35,8 +35,9 @@ export default function SettingsScreen() {
 
 					<View className="w-10 h-10 items-center justify-center rounded-full overflow-hidden">
 						<Image
-							source={require("@/assets/images/Espira_logo.svg")}
-							style={{ width: 60, height: 60, resizeMode: "contain" }}
+							source={require("@/assets/images/Espira logo.png")}
+							style={{ width: 60, height: 60 }}
+							contentFit="contain"
 						/>
 					</View>
 				</View>

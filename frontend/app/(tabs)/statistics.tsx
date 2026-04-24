@@ -1,9 +1,8 @@
 import { Text } from "@react-navigation/elements";
 
 import React, { useState } from "react";
-import {
-	Image,
-	Platform,
+import { Image } from "expo-image";
+import { Platform,
 	ScrollView,
 	StyleSheet,
 	TouchableOpacity,

@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
+import { Image } from "expo-image";
 import { useFonts } from 'expo-font';
+import { useRouter } from 'expo-router';
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  SafeAreaView,
   StatusBar,
   Alert,
-} from 'react-native';
+ } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { CheckBox } from 'react-native-elements';
 
 import { phonenumberValidator } from '../../helpers/phonenumberValidator';
@@ -22,6 +23,7 @@ import { emailValidator } from '../../helpers/emailValidator';
 import {fullnameValidator} from '../../helpers/fullnameValidator';
 
 const SignUpScreen = () => {
+  const router = useRouter();
   // State variables
   const [fullName, setFullName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -139,7 +141,7 @@ const SignUpScreen = () => {
       Alert.alert(
         'Success', 
         'Account created successfully! Please verify your email.',
-        [{ text: 'OK', onPress: () => console.log('Navigate to login') }]
+        [{ text: 'OK', onPress: () => router.replace('/(auth)/login') }]
       );
       // Navigate to login screen
     } catch (error) {
@@ -150,8 +152,7 @@ const SignUpScreen = () => {
   };
 
   const handleLogin = () => {
-    console.log('Navigate to login');
-    // Add navigation to login screen here
+    router.push('/(auth)/login');
   };
 
   return (
@@ -180,7 +181,7 @@ const SignUpScreen = () => {
             <Image 
               source={require('../../assets/images/backround.png')}
               style={styles.picture1}
-              resizeMode='contain'
+              contentFit='contain'
             />
           </View>
 
@@ -366,7 +367,6 @@ const styles = StyleSheet.create({
     width: 68.12,
     height: 81,
     marginRight: 12,
-    resizeMode: 'contain',
   },
   appTitle: {
     fontSize: 42,
@@ -385,7 +385,6 @@ const styles = StyleSheet.create({
   picture1: {
     width: '100%',
     height: 200,
-    resizeMode: 'contain',
   },
   formContainer: {
     flex: 1,

@@ -5,7 +5,16 @@ import { Feather } from "@expo/vector-icons";
 
 export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   return (
-    <View className="absolute bottom-0 w-full flex-row justify-around items-center bg-white pt-4 pb-8 rounded-t-3xl shadow-[0_-4px_20px_rgba(0,0,0,0.05)] border-t border-gray-100">
+    <View
+      className="w-full flex-row justify-around items-center bg-white pt-4 pb-8 rounded-t-3xl border-t border-gray-100"
+      style={{
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: -4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 12,
+        elevation: 20,
+      }}
+    >
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
 

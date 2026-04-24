@@ -1,8 +1,10 @@
+import { Image } from "expo-image";
 import { Feather } from "@expo/vector-icons";
 
 import { useRouter } from "expo-router";
 import React, { useRef, useState } from "react";
-import { SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const InputField = ({ label, value, onChangeText, isPassword = false }: any) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -59,7 +61,7 @@ export default function EditProfileScreen() {
 
             <View className="w-10 h-10 items-center justify-center rounded-full overflow-hidden">
               <Image 
-                source={require('@/assets/images/Espira_logo.svg')} 
+                source={require('@/assets/images/Espira logo.png')} 
                 style={{ width: 60, height: 60 }} 
                 contentFit="contain"
               />
