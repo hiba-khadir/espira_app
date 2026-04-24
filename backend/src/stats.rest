@@ -1,6 +1,6 @@
 ### Variables
 @baseUrl = http://localhost:3000/api
-@token = token
+@token =  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJpZDEiLCJpYXQiOjE3NzcwMjgwNjcsImV4cCI6MTc3NzYzMjg2N30.WvUycm0UoziyNryTzgik3byVHo26SH3ZIqqIAGmIt-k
 @deviceId = id1
 
 ### POST create actuator device
