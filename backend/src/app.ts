@@ -5,7 +5,7 @@ import { runHistoryCleanup } from './services/historyCleanup';
 /*routes and auth */
 import authenticateToken from './middleware/auth.middleware';
 import deviceRoutes from './routes/device.router';
-import authRoute from "./routes/auth.router.js";
+import authRoute from "./routes/auth.router";
 import statsRoutes from './routes/stats.router';
 import { connectMqtt , getMqttStatus} from './services/mqtt/mqtt.index';
 
@@ -19,7 +19,7 @@ app.use(cors({
 //extend files limit and use expess.json 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
-
+app.use("/api/auth", authRoute);
 //defining api endpoints 
 app.use("/api/devices",authenticateToken,deviceRoutes);
 app.use("/api/stats",authenticateToken,statsRoutes);
