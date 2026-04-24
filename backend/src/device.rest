@@ -1,7 +1,7 @@
 ### Variables
 @baseUrl = http://localhost:3000/api
-@token = token
-@deviceId = 1
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJpZDEiLCJpYXQiOjE3NzcwMjgwNjcsImV4cCI6MTc3NzYzMjg2N30.WvUycm0UoziyNryTzgik3byVHo26SH3ZIqqIAGmIt-k
+@deviceId = 2
 
 ###
 
@@ -11,14 +11,14 @@ Authorization: Bearer {{token}}
 
 ###
 
-### GET all devices - filter by status
-GET {{baseUrl}}/devices?status=online
+### GET all devices: filter by status
+GET {{baseUrl}}/devices?status=unavailable
 Authorization: Bearer {{token}}
 
 ###
 
 ### GET all devices - filter by type
-GET {{baseUrl}}/devices?type=sensor
+GET {{baseUrl}}/devices?type=actuator
 Authorization: Bearer {{token}}
 
 ###
@@ -50,8 +50,8 @@ Content-Type: application/json
 
 {
   "name": "Temperature Sensor",
-  "subtypeId": 2,
-  "stateTopic": "devices/2/state"
+  "subtypeId": 5,
+  "stateTopic": "devices/3/state"
 }
 
 ###
@@ -80,7 +80,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### PUT update device
-PUT {{baseUrl}}/devices/{{deviceId}}
+PUT {{baseUrl}}/devices/2
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -93,13 +93,13 @@ Content-Type: application/json
 ###
 
 ### GET device state
-GET {{baseUrl}}/devices/{{deviceId}}/state
+GET {{baseUrl}}/devices/2/state
 Authorization: Bearer {{token}}
 
 ###
 
-### PUT update device state - turn on
-PUT {{baseUrl}}/devices/{{deviceId}}/state
+### PUT update device state :turn on
+PUT {{baseUrl}}/devices/2/state
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -107,6 +107,7 @@ Content-Type: application/json
   "isOn": true,
   "intensity": 80,
   "colorHex": "#FF5733"
+
 }
 
 ###

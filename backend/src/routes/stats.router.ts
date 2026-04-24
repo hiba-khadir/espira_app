@@ -1,15 +1,11 @@
-const express = require('express');
-const {
-    getAllDevicessController,
-    getDeviceByIdController,
-    searchDeviceController,   //ask if they'll need this
-} = require('../controllers/device.controller.js')
+import {
+  getDevicesStatusCountController, getSensorStatsController
+} from '../controllers/stats.controller.js'
+
+import express from 'express';
 
 const router = express.Router();
 
-router.get('/search',searchProductController);
-router.get('/', getAllProductsController);
-router.get('/latest/:max',getLatestProductsController);
-router.get('/:id', getProductByIdController);
-
-module.exports = router;
+router.get('/devices/status',getDevicesStatusCountController)
+router.post('/devices/:id',getSensorStatsController)
+export default router;
