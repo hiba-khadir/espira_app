@@ -1,0 +1,351 @@
+import React, { useState } from 'react';
+import { useFonts } from 'expo-font';
+import { FormProvider, useForm } from 'react-hook-form';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  SafeAreaView,
+  StatusBar,
+  Alert,
+} from 'react-native';
+
+import { phonenumberValidator } from '../../helpers/phonenumberValidator';
+import { passwordValidator } from '../../helpers/passwordValidator';
+
+const LoginScreen = () => {
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  
+  // Error states
+  const [phoneError, setPhoneError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  
+  // Loading state
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Validate phone number in real-time
+  const validatePhoneNumber = (text: string) => {
+    setPhoneNumber(text);
+    const error = phonenumberValidator(text);
+    setPhoneError(error);
+    return !error;
+  };
+
+  // Validate password in real-time
+  const validatePassword = (text: string) => {
+    setPassword(text);
+    const error = passwordValidator(text);
+    setPasswordError(error);
+    return !error;
+  };
+
+  const handleLogin = async () => {
+    // Validate both fields before login
+    const isPhoneValid = validatePhoneNumber(phoneNumber);
+    const isPasswordValid = validatePassword(password);
+    
+    if (!isPhoneValid || !isPasswordValid) {
+      Alert.alert('Validation Error', 'Please fix the errors before continuing');
+      return;
+    }
+    
+    // Start loading
+    setIsLoading(true);
+    
+    try {
+      // Handle login logic here
+      console.log('Login pressed', { phoneNumber, password });
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // If login successful
+      Alert.alert('Success', 'Login successful!');
+      // Navigate to home screen
+    } catch (error) {
+      Alert.alert('Login Failed', 'Invalid phone number or password');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleForgotPassword = () => {
+    console.log('Forgot password pressed');
+  };
+
+  const handleSignUp = () => {
+    console.log('Sign up pressed');
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardView}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Time Display - Top Left */}
+          <Text style={styles.timeText}>9:41</Text>
+
+          {/* App Logo/Title */}
+          <View style={styles.logoContainer}>
+            <Image 
+              source={require('../../assets/images/logo.png')}
+              style={styles.logo}
+            />
+            <Text style={styles.appTitle}>Espira</Text>
+          </View>
+          
+          {/* Picture Section */}
+          <View style={styles.pictureSection}>
+            <Image 
+              source={require('../../assets/images/backround.png')}
+              style={styles.picture1}
+              resizeMode='contain'
+            />
+          </View>
+
+          {/* Login Form */}
+          <View style={styles.formContainer}>
+            <Text style={styles.loginTitle}>Log In</Text>
+
+            {/* Phone Number Input */}
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={[styles.input, phoneError ? styles.inputError : null]}
+                placeholder="Phone Number"
+                placeholderTextColor="#999"
+                keyboardType="phone-pad"
+                value={phoneNumber}
+                onChangeText={validatePhoneNumber}
+                editable={!isLoading}
+              />
+              {phoneError ? (
+                <Text style={styles.errorText}>{phoneError}</Text>
+              ) : null}
+              <View style={styles.separator} />
+            </View>
+
+            {/* Password Input */}
+            <View style={styles.inputContainer}>
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  style={[styles.input, styles.passwordInput, passwordError ? styles.inputError : null]}
+                  placeholder="Password"
+                  placeholderTextColor="#999"
+                  secureTextEntry={!showPassword}
+                  value={password}
+                  onChangeText={validatePassword}
+                  editable={!isLoading}
+                />
+                <TouchableOpacity
+                  style={styles.eyeButton}
+                  onPress={() => setShowPassword(!showPassword)}
+                  disabled={isLoading}
+                >
+                  <Text style={styles.eyeText}>
+                    {showPassword ? '👁️' : '👁️‍🗨️'}
+                  </Text>
+                </TouchableOpacity>
+                {passwordError ? (
+                  <Text style={styles.errorText}>{passwordError}</Text>
+                ) : null}
+                <View style={styles.separator} />
+              </View>
+            </View>
+
+            {/* Forgot Password Link */}
+            <TouchableOpacity
+              style={styles.forgotPasswordContainer}
+              onPress={handleForgotPassword}
+              disabled={isLoading}
+            >
+              <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+            </TouchableOpacity>
+
+            {/* Login Button */}
+            <TouchableOpacity 
+              style={[styles.loginButton, isLoading && styles.loginButtonDisabled]} 
+              onPress={handleLogin}
+              disabled={isLoading}
+            >
+              <Text style={styles.loginButtonText}>
+                {isLoading ? 'Logging in...' : 'Log In'}
+              </Text>
+            </TouchableOpacity>
+
+            {/* Sign Up Link */}
+            <View style={styles.signUpContainer}>
+              <Text style={styles.signUpText}>Don't have an account? </Text>
+              <TouchableOpacity onPress={handleSignUp} disabled={isLoading}>
+                <Text style={styles.signUpLink}>Sign Up</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  keyboardView: {
+    flex: 1,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    paddingHorizontal: 24,
+    paddingBottom: 32,
+  },
+  timeText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#000000',
+    marginTop: 8,
+    marginBottom: 20,
+  },
+  logoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: -30,
+    marginTop: 0,
+  },
+  logo: {
+    width: 68.12,
+    height: 81,
+    marginRight: 12,
+    resizeMode: 'contain',
+  },
+  appTitle: {
+    fontSize: 42,
+    fontWeight: '700',
+    color: '#1F4E20',
+    letterSpacing: 1,
+  },
+  pictureSection: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 5,
+    marginLeft: 12,
+
+  },
+  picture1: {
+    width: '100%',
+    height: 200,
+    resizeMode: 'contain',
+  },
+  formContainer: {
+    flex: 1,
+  },
+  loginTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    marginBottom: 10,
+  },
+  inputContainer: {
+    marginBottom: 0,
+  },
+  input: {
+    borderWidth: 0,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 16,
+    color: '#1a1a1a',
+    backgroundColor: '#ffffff',
+  },
+  inputError: {
+    borderWidth: 1,
+    borderColor: '#FF3B30',
+  },
+  passwordContainer: {
+    position: 'relative',
+  },
+  passwordInput: {
+    paddingRight: 50,
+  },
+  eyeButton: {
+    position: 'absolute',
+    right: 16,
+    top: 14,
+  },
+  eyeText: {
+    fontSize: 20,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#E7E3E0',
+    marginVertical: 20,
+  },
+  forgotPasswordContainer: {
+    alignItems: 'flex-end',
+    marginBottom: 32,
+  },
+  forgotPasswordText: {
+    fontSize: 14,
+    color: '#4C5F66',
+    fontWeight: '500',
+    alignSelf: 'center',
+  },
+  loginButton: {
+    width: 255,
+    height: 65,
+    backgroundColor: '#1F4E20',
+    borderRadius: 40,
+    paddingVertical: 20,
+    alignItems: 'center',
+    marginBottom: 5,
+    elevation: 4,
+    alignSelf: 'center',
+  },
+  loginButtonDisabled: {
+    backgroundColor: '#95A5A6',
+    opacity: 0.7,
+  },
+  loginButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  signUpContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  signUpText: {
+    fontSize: 14,
+    color: '#666',
+  },
+  signUpLink: {
+    fontSize: 14,
+    color: '#000000',
+    fontWeight: '600',
+  },
+  errorText: {
+    color: '#FF3B30',
+    fontSize: 12,
+    marginTop: 4,
+    marginLeft: 16,
+  },
+});
+
+export default LoginScreen;

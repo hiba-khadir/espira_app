@@ -131,6 +131,7 @@ const getDeviceHistory = (deviceId: number, userId: string, max?: string) => {
   });
 };
 
+
 // GET /api/devices/:id/subtype
 const getDeviceSubtype = (deviceId: number, userId: string) => {
   return prisma.device.findFirst({
@@ -139,7 +140,88 @@ const getDeviceSubtype = (deviceId: number, userId: string) => {
   });
 };
 
+
+/* ------------------Functions internal to the system-----   */
+// write action to history : this is only called internally no http request assigned
+const logDeviceHistory = async (deviceId: number, userId: string, isOn: boolean) => {
+  const actuatorState = await prisma.actuatorState.findUnique({ where: { deviceId } });
+
+  return prisma.deviceHistory.create({
+    data: {
+      deviceId,
+      actionType: isOn ? 'turned_on' : 'turned_off',
+      oldValue: String(actuatorState?.isOn ?? false),
+      newValue: String(isOn),
+      source: 'user',
+      actorId: userId,
+    }
+  });
+};
+
+export const updateConnectionStatus = (deviceId: number, status: ConnectionStatus) => {
+  return prisma.device.update({
+    where: { id: deviceId },
+    data: { connectionStatus: status }
+  });
+};
+
+
+/* Functions called only by the system internally : used by mqtt service functions
+        doesn't require any auth ( no controller ) */
+
+// called by MQTT on startup to get all topics
+const getAllDeviceTopics = () => {
+  return prisma.device.findMany({
+    select: { stateTopic: true, controlTopic: true }
+  });
+};
+
+// called by MQTT to find device by topic
+const getDeviceByTopic = (topic: string) => {
+  return prisma.device.findFirst({
+    where: {
+      OR: [
+        { stateTopic: topic },
+        { controlTopic: topic }
+      ]
+    },
+    include: { subtype: true }
+  });
+};
+
+// called by MQTT when device confirms actuator state
+const confirmActuatorState = (deviceId: number) => {
+  return prisma.device.update({
+    where: { id: deviceId },
+    data: { lastSeen: new Date(), connectionStatus: 'online' }
+  });
+};
+
+// called by MQTT when sensor publishes a reading
+const recordSensorReading = async (deviceId: number, value: number) => {
+  return prisma.$transaction([
+    prisma.sensorState.update({
+      where: { deviceId },
+      data: { value, lastUpdated: new Date() }
+    }),
+    prisma.deviceHistory.create({
+      data: {
+        deviceId,
+        actionType: 'sensor_reading',
+        oldValue: null,
+        newValue: String(value),
+        source: 'system',
+      }
+    }),
+    prisma.device.update({
+      where: { id: deviceId },
+      data: { lastSeen: new Date(), connectionStatus: 'online' }
+    })
+  ]);
+};
+
 export {
   getAllDevices, getDeviceById, createDevice, updateDevice, deleteDevice,
-  getDeviceState, updateDeviceState, getDeviceHistory, getDeviceSubtype,
+  getDeviceState, updateDeviceState, getDeviceHistory, getDeviceSubtype,logDeviceHistory,
+  getAllDeviceTopics, getDeviceByTopic , recordSensorReading ,confirmActuatorState
 };

@@ -1,9 +1,12 @@
 import {
-  getAllDevices, getDeviceById, createDevice, updateDevice,
-  deleteDevice, getDeviceState, updateDeviceState, getDeviceHistory, getDeviceSubtype
+  getAllDevices, getDeviceById, createDevice, updateDevice,updateConnectionStatus,
+  deleteDevice, getDeviceState, updateDeviceState, getDeviceHistory, getDeviceSubtype ,logDeviceHistory
 } from '../models/device.model';
 import { Request, Response } from 'express';
 import { ConnectionStatus, DeviceType } from '../generated/prisma';
+import { mqttEvents } from '../services/mqtt/mqtt.index';
+import { publishCommandAndWait } from '../services/mqtt/mqtt.index';
+
 
 // GET /api/devices
 const getAllDevicesController = async (req: Request, res: Response): Promise<void> => {
@@ -44,6 +47,8 @@ const createDeviceController = async (req: Request, res: Response): Promise<void
     }
     const device = await createDevice(userId, { name, subtypeId, stateTopic, controlTopic });
     if (!device) { res.status(400).json({ message: 'Invalid subtypeId' }); return; }
+    // notify MQTT service to subscribe to this device's topics
+    mqttEvents.emit('device:created', device);
     res.status(201).json(device);
   } catch (err: any) {
     res.status(500).json({ message: err.message });
@@ -92,22 +97,37 @@ const getDeviceStateController = async (req: Request, res: Response): Promise<vo
 
 // PUT /api/devices/:id/state (actuator only)
 const updateDeviceStateController = async (req: Request, res: Response): Promise<void> => {
+  //params
+  const userId = req.user.id;
+  const deviceId = parseInt(req.params.id as string);
+  const { isOn, intensity, colorHex } = req.body;
   try {
-    const userId = req.user.id;
-    const deviceId = parseInt(req.params.id as string);
-    const { isOn, intensity, colorHex } = req.body;
     if (isOn === undefined) {
-      res.status(400).json({ message: 'isOn is required' }); return;
+      res.status(400).json({ message: 'isOn is required' }); 
+      return;
     }
-    const device = await updateDeviceState(deviceId, userId, { isOn, intensity, colorHex });
-    if (!device) { res.status(404).json({ message: 'Device not found' }); return; }
-    if ('error' in device) { res.status(400).json({ message: device.error }); return; }
-    if (device.controlTopic) {
-      // publishCommand(device.controlTopic, { isOn, intensity, colorHex });
+    //get the device and control topic
+    const device = await getDeviceById(deviceId, userId);
+    if (!device) { 
+      res.status(404).json({ message: 'Device not found' }); 
+      return; 
     }
+
+    if (!device.controlTopic){ 
+      res.status(400).json({ message: 'Device has no control topic' }); 
+      return; 
+    }
+
+    await publishCommandAndWait(deviceId, device.controlTopic, { isOn, intensity, colorHex });
+
+    await updateDeviceState(deviceId, userId, { isOn, intensity, colorHex });
+    await logDeviceHistory(deviceId, userId, isOn);
+
     res.status(200).json({ message: 'State updated' });
   } catch (err: any) {
-    res.status(500).json({ message: err.message });
+    //if timeout or device error mark as unavailable
+    await updateConnectionStatus(deviceId, 'error').catch(() => {});
+    res.status(504).json({ message: err.message });
   }
 };
 
