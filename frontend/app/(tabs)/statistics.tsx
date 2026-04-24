@@ -1,15 +1,20 @@
 import React, { useState } from "react";
 import { Image } from "expo-image";
-import { Platform, StyleSheet, View, TouchableOpacity } from "react-native";
+import {
+  Platform,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import ParallaxScrollView from "@/components/parallax-scroll-view";
 import { Text } from "@react-navigation/elements";
 import Header from "@/components/header";
 import {
-  VictoryScatter,
   VictoryAxis,
   VictoryChart,
-  VictoryTheme,
   VictoryArea,
+  VictoryPie,
 } from "victory-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import calendarEvent from "@/components/ui/calendar";
@@ -29,7 +34,7 @@ const months = [
 ];
 
 const humidity = [28, 32, 25, 30, 45, 60, 90, 150, 145, 110, 80, 120];
-const temperature = [5, 8, 20, 45, 80, 100, 115, 130, 175, 200, 215, 225];
+const temperature = [0, 8, 20, 45, 80, 100, 115, 130, 175, 200, 215, 225];
 
 const hData = months.map((m, i) => ({ x: m, y: humidity[i] }));
 const tData = months.map((m, i) => ({ x: m, y: temperature[i] }));
@@ -115,15 +120,117 @@ export function Graphs() {
     </View>
   );
 }
+const SIZE = 280;
+export function Chart() {
+  return (
+    <View style={styles.card}>
+      <View style={styles.ChartCard}>
+        <View style={{ position: "relative" }}>
+          <VictoryPie
+            data={[
+              { x: "value", y: 70 },
+              { x: "empty", y: 30 },
+            ]}
+            width={SIZE}
+            height={SIZE}
+            radius={130}
+            innerRadius={120}
+            startAngle={-140}
+            endAngle={140}
+            cornerRadius={6}
+            style={{
+              parent: { position: "absolute", top: 160, left: 0 }, // ← add this
+              data: {
+                fill: ({ datum }) =>
+                  datum.x === "value" ? "#1a4a2a" : "#e5e7eb",
+              },
+            }}
+            labels={() => null}
+          />
+          <VictoryPie
+            data={[
+              { x: "value", y: 20 },
+              { x: "empty", y: 80 },
+            ]}
+            width={SIZE}
+            height={SIZE}
+            radius={100}
+            innerRadius={93}
+            startAngle={-140}
+            endAngle={140}
+            cornerRadius={6}
+            style={{
+              parent: { position: "absolute", top: -120, left: 0 }, // ← already here
+              data: {
+                fill: ({ datum }) =>
+                  datum.x === "value" ? "#4caf7d" : "#e5e7eb",
+              },
+            }}
+            labels={() => null}
+          />
+
+          <View
+            style={{
+              position: "absolute",
+              top: 30,
+              left: -10,
+              right: 0,
+              bottom: 0,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text style={{ fontSize: 16, fontWeight: "500", color: "#111" }}>
+              lighting
+            </Text>
+            <Text style={{ fontSize: 14, color: "#4caf7d", marginTop: 2 }}>
+              20%
+            </Text>
+          </View>
+        </View>
+      </View>
+      <View style={styles.legend}>
+        <View style={styles.legendRow}>
+          <View style={[styles.dot, { backgroundColor: "#1a4a2a" }]} />
+          <Text style={styles.legendText}>Lighting</Text>
+          <Text style={styles.legendValue}>30%</Text>
+        </View>
+        <View style={styles.Line} />
+        <View style={styles.legendRow}>
+          <View style={[styles.dot, { backgroundColor: "#4caf7d" }]} />
+          <Text style={styles.legendText}>Moisture</Text>
+          <Text style={styles.legendValue}>50%</Text>
+        </View>
+      </View>
+    </View>
+  );
+}
 export default function Statistics() {
   return (
     <SafeAreaView style={styles.screen}>
-      <Graphs></Graphs>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        <Text style={styles.text}>Graphs</Text>
+        <Graphs></Graphs>
+        <Chart></Chart>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  ChartCard: {
+    height: 280,
+    marginBlock: 10,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  text: {
+    color: "#000000",
+  },
   screen: {
     flex: 1,
     backgroundColor: "#ffffff",
@@ -147,7 +254,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     marginBottom: 8,
   },
-  legend: { gap: 6 },
+  legend: { gap: 6, marginInline: 10 },
   legendItem: { flexDirection: "row", alignItems: "center", gap: 8 },
   dot: { width: 9, height: 9, borderRadius: 5 },
   legendLabel: { fontSize: 13, color: "#7a9a8a", fontWeight: "500" },
@@ -160,5 +267,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
   },
+  legendRow: {
+    flexDirection: "row",
+    gap: 10,
+    alignItems: "center",
+    paddingVertical: 12,
+  },
+  legendText: { flex: 1, fontSize: 14, color: "#333" },
+  legendValue: { fontSize: 14, fontWeight: "500", color: "#333" },
+  scrollContent: {
+    paddingBottom: 24,
+  },
+  Line: { height: 0.5, backgroundColor: "#e5e7eb" },
+
   datePillText: { color: "#fff", fontSize: 13, fontWeight: "500" },
 });
