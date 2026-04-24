@@ -1,0 +1,6 @@
+###
+### Variables
+@baseUrl = http://localhost:3000/api
+@token = token
+@deviceId = id1
+GET {{baseUrl}}/mqttStatus

@@ -9,7 +9,8 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "espira.app"
     },
     "android": {
       "adaptiveIcon": {
@@ -23,6 +24,7 @@
       "package": "espira.app"
     },
     "web": {
+      "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
@@ -39,7 +41,8 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true,
