@@ -46,53 +46,41 @@ export async function signUp(req: Request, res: Response): Promise<void> {
 
 // ─────────────────────────────────────────────
 // POST /api/auth/request-otp
-// Body: { phoneNumber }
+// Body: { email }
 // ─────────────────────────────────────────────
 export async function requestOtp(req: Request, res: Response): Promise<void> {
-  const { phoneNumber } = req.body;
+  const { email } = req.body;
 
-  if (!phoneNumber || typeof phoneNumber !== 'string') {
-    res.status(400).json({ error: 'phoneNumber is required' });
+  if (!email || typeof email !== 'string' || !email.includes('@')) {
+    res.status(400).json({ error: 'a valid email is required' });
     return;
   }
 
   try {
-    await requestOtpModel(phoneNumber);
+    await requestOtpModel(email);
     res.status(200).json({ message: 'OTP sent to your email address' });
   } 
-  // catch (err: any) {
-  //   const msg = err?.message;
-  //   if (msg === 'USER_NOT_FOUND') {
-  //     res.status(404).json({ error: 'No account found with that phone number' });
-  //   } else if (msg === 'NO_EMAIL') {
-  //     res.status(400).json({ error: 'No email address associated with this account' });
-  //   } else {
-  //     res.status(500).json({ error: 'Internal server error' });
-  //   }
-  // }
+  
    catch (err: any) {
-    console.error('[request-otp error]', err); // add this line
+    console.error('[request-otp error]', err);
     const msg = err?.message;
     if (msg === 'USER_NOT_FOUND') {
-      res.status(404).json({ error: 'No account found with that phone number' });
-    } else if (msg === 'NO_EMAIL') {
-      res.status(400).json({ error: 'No email address associated with this account' });
+      res.status(404).json({ error: 'No account found with that email' });
     } else {
       res.status(500).json({ error: 'Internal server error' });
     }
-  
-}
+  }
 }
 
 // ─────────────────────────────────────────────
 // POST /api/auth/verify-otp
-// Body: { phoneNumber, otpCode }
+// Body: { email, otpCode }
 // ─────────────────────────────────────────────
 export async function verifyOtp(req: Request, res: Response): Promise<void> {
-  const { phoneNumber, otpCode } = req.body;
+  const { email, otpCode } = req.body;
 
-  if (!phoneNumber || typeof phoneNumber !== 'string') {
-    res.status(400).json({ error: 'phoneNumber is required' });
+  if (!email || typeof email !== 'string' || !email.includes('@')) {
+    res.status(400).json({ error: 'valid email is required' });
     return;
   }
   if (!otpCode || typeof otpCode !== 'string') {
@@ -101,12 +89,12 @@ export async function verifyOtp(req: Request, res: Response): Promise<void> {
   }
 
   try {
-    const result = await verifyOtpModel(phoneNumber, otpCode);
+    const result = await verifyOtpModel(email, otpCode);
     res.status(200).json({ message: 'Account verified successfully', token: result.token });
   } catch (err: any) {
     const msg = err?.message;
     if (msg === 'USER_NOT_FOUND') {
-      res.status(404).json({ error: 'No account found with that phone number' });
+      res.status(404).json({ error: 'No account found with that email' });
     } else if (msg === 'OTP_NOT_REQUESTED') {
       res.status(400).json({ error: 'No OTP was requested for this account' });
     } else if (msg === 'INVALID_OTP') {
@@ -119,13 +107,13 @@ export async function verifyOtp(req: Request, res: Response): Promise<void> {
 
 // ─────────────────────────────────────────────
 // POST /api/auth/login
-// Body: { phoneNumber, password }
+// Body: { email, password }
 // ─────────────────────────────────────────────
 export async function login(req: Request, res: Response): Promise<void> {
-  const { phoneNumber, password } = req.body;
+  const { email, password } = req.body;
 
-  if (!phoneNumber || typeof phoneNumber !== 'string') {
-    res.status(400).json({ error: 'phoneNumber is required' });
+  if (!email || typeof email !== 'string' || !email.includes('@')) {
+    res.status(400).json({ error: 'a valid email is required' });
     return;
   }
   if (!password || typeof password !== 'string') {
@@ -134,12 +122,13 @@ export async function login(req: Request, res: Response): Promise<void> {
   }
 
   try {
-    const result = await loginModel(phoneNumber, password);
+    const result = await loginModel(email, password);
     res.status(200).json({ message: 'Login successful', token: result.token });
   } catch (err: any) {
+    console.error('[login error]', err);
     const msg = err?.message;
     if (msg === 'INVALID_CREDENTIALS') {
-      res.status(401).json({ error: 'Invalid phone number or password' });
+      res.status(401).json({ error: 'Invalid email or password' });
     } else if (msg === 'NOT_VERIFIED') {
       res.status(403).json({ error: 'Account not verified. Please check your email for the OTP.' });
     } else {

@@ -13,7 +13,7 @@ const SALT_ROUNDS = 12;
 export interface SignUpInput {
   name: string;
   phoneNumber: string;
-  email: string;       // required now — OTP is delivered via email
+  email: string;       
   password: string;
 }
 
@@ -54,19 +54,18 @@ export async function signUpModel(data: SignUpInput) {
  * Generates a fresh OTP, stores it on the user record, and sends it via email.
  * Throws if user is not found or has no email on their account.
  */
-export async function requestOtpModel(phoneNumber: string) {
-  const user = await prisma.user.findUnique({ where: { phoneNumber } });
+export async function requestOtpModel(email: string) {
+  const user = await prisma.user.findUnique({ where: { email } });
   if (!user) throw new Error('USER_NOT_FOUND');
-  if (!user.email) throw new Error('NO_EMAIL');
-
+ 
   const otpCode = generateOtpCode();
-
+ 
   await prisma.user.update({
-    where: { phoneNumber },
+    where: { email },
     data: { otpCode },
   });
-
-  await sendOtpEmail(user.email, otpCode);
+ 
+  await sendOtpEmail(email, otpCode);
 }
 
 // ─────────────────────────────────────────────
@@ -77,20 +76,20 @@ export async function requestOtpModel(phoneNumber: string) {
  * Compares submitted OTP against stored value.
  * On success: marks user as verified, clears OTP, returns a JWT.
  */
-export async function verifyOtpModel(phoneNumber: string, otpCode: string) {
-  const user = await prisma.user.findUnique({ where: { phoneNumber } });
+export async function verifyOtpModel(email: string, otpCode: string) {
+  const user = await prisma.user.findUnique({ where: { email } });
   if (!user) throw new Error('USER_NOT_FOUND');
   if (!user.otpCode) throw new Error('OTP_NOT_REQUESTED');
   if (user.otpCode !== otpCode) throw new Error('INVALID_OTP');
-
+ 
   await prisma.user.update({
-    where: { phoneNumber },
+    where: { email },
     data: {
       isVerified: true,
       otpCode: null,
     },
   });
-
+ 
   const token = generateAccessToken(user.id);
   return { token };
 }
@@ -100,11 +99,11 @@ export async function verifyOtpModel(phoneNumber: string, otpCode: string) {
 // ─────────────────────────────────────────────
 
 /**
- * Verifies phone + password and returns a JWT on success.
+ * Verifies email + password and returns a JWT on success.
  * Throws if user not found, not verified, or password mismatch.
  */
-export async function loginModel(phoneNumber: string, password: string) {
-  const user = await prisma.user.findUnique({ where: { phoneNumber } });
+export async function loginModel(email: string, password: string) {
+  const user = await prisma.user.findUnique({ where: { email } });
   if (!user) throw new Error('INVALID_CREDENTIALS');
   if (!user.isVerified) throw new Error('NOT_VERIFIED');
 
