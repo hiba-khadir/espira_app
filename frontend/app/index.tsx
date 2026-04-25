@@ -18,13 +18,13 @@ const slides = [
   {
     title: "Vision",
     image: require("@/assets/images/vision.png"),
-    description: "Espira is we envision a future where barren landscapes are transformed into thriving ecosystems through our reforestation project. Our vision goes beyond planting trees;",
+    description: "Espira is a smart greenhouse management app designed to make remote and effortless plant care a reality. Developed by a passionate young team of six computer science students, Espira allows users to monitor and control their greenhouse environment from anywhere  Espira simplifies sustainable gardening by combining intuitive design with intelligent automation.",
     isStart: false,
   },
   {
     title: "Mission",
     image: require("@/assets/images/mission.png"),
-    description: "At Identi-tree organization, we envision a future where barren landscapes are transformed into thriving ecosystems through our reforestation project. Our vision goes beyond planting trees; we strive to cultivate a deep connection between people and nature, inspiring communities to actively participate in sustainable practices.",
+    description: "Our goal is to remove the guesswork from plant care, helping users save time, reduce resource waste, and grow healthier plants — all while learning from real-time data and alerts. With Espira, managing a green space becomes not just easier, but smarter and more enjoyable and eco friendly.",
     isStart: false,
   },
 ];
