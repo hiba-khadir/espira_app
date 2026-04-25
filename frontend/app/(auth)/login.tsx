@@ -17,27 +17,28 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { phonenumberValidator } from "../../helpers/phonenumberValidator";
+import { emailValidator } from "../../helpers/emailValidator";
 import { passwordValidator } from "../../helpers/passwordValidator";
+import { Feather } from "@expo/vector-icons";
 
 const LoginScreen = () => {
   const router = useRouter();
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   // Error states
-  const [phoneError, setPhoneError] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
 
-  // Validate phone number in real-time
-  const validatePhoneNumber = (text: string) => {
-    setPhoneNumber(text);
-    const error = phonenumberValidator(text);
-    setPhoneError(error);
+  // Validate email in real-time
+  const validateEmail = (text: string) => {
+    setEmail(text);
+    const error = emailValidator(text);
+    setEmailError(error);
     return !error;
   };
 
@@ -51,10 +52,10 @@ const LoginScreen = () => {
 
   const handleLogin = async () => {
     // Validate both fields before login
-    const isPhoneValid = validatePhoneNumber(phoneNumber);
+    const isEmailValid = validateEmail(email);
     const isPasswordValid = validatePassword(password);
 
-    if (!isPhoneValid || !isPasswordValid) {
+    if (!isEmailValid || !isPasswordValid) {
       Alert.alert(
         "Validation Error",
         "Please fix the errors before continuing",
@@ -67,7 +68,7 @@ const LoginScreen = () => {
 
     try {
       // Handle login logic here
-      console.log("Login pressed", { phoneNumber, password });
+      console.log("Login pressed", { email, password });
 
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1500));
@@ -75,7 +76,7 @@ const LoginScreen = () => {
       // If login successful, navigate to home
       router.replace("/(tabs)");
     } catch (error) {
-      Alert.alert("Login Failed", "Invalid phone number or password");
+      Alert.alert("Login Failed", "Invalid email or password");
     } finally {
       setIsLoading(false);
     }
@@ -122,19 +123,23 @@ const LoginScreen = () => {
           <View style={styles.formContainer}>
             <Text style={styles.loginTitle}>Log In</Text>
 
-            {/* Phone Number Input */}
+            {/* Email Input */}
             <View style={styles.inputContainer}>
-              <TextInput
-                style={[styles.input, phoneError ? styles.inputError : null]}
-                placeholder="Phone Number"
-                placeholderTextColor="#999"
-                keyboardType="phone-pad"
-                value={phoneNumber}
-                onChangeText={validatePhoneNumber}
-                editable={!isLoading}
-              />
-              {phoneError ? (
-                <Text style={styles.errorText}>{phoneError}</Text>
+              <View style={styles.inputWrapper}>
+                <Feather name="mail" size={20} color="#999" style={styles.inputIcon} />
+                <TextInput
+                  style={[styles.input, emailError ? styles.inputError : null]}
+                  placeholder="Email"
+                  placeholderTextColor="#999"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  value={email}
+                  onChangeText={validateEmail}
+                  editable={!isLoading}
+                />
+              </View>
+              {emailError ? (
+                <Text style={styles.errorText}>{emailError}</Text>
               ) : null}
               <View style={styles.separator} />
             </View>
@@ -142,6 +147,7 @@ const LoginScreen = () => {
             {/* Password Input */}
             <View style={styles.inputContainer}>
               <View style={styles.passwordContainer}>
+                <Feather name="lock" size={20} color="#999" style={styles.inputIcon} />
                 <TextInput
                   style={[
                     styles.input,
@@ -164,11 +170,11 @@ const LoginScreen = () => {
                     {showPassword ? "👁️" : "👁️‍🗨️"}
                   </Text>
                 </TouchableOpacity>
-                {passwordError ? (
-                  <Text style={styles.errorText}>{passwordError}</Text>
-                ) : null}
-                <View style={styles.separator} />
               </View>
+              {passwordError ? (
+                <Text style={styles.errorText}>{passwordError}</Text>
+              ) : null}
+              <View style={styles.separator} />
             </View>
 
             {/* Forgot Password Link */}
@@ -268,10 +274,19 @@ const styles = StyleSheet.create({
   inputContainer: {
     marginBottom: 0,
   },
-  input: {
-    borderWidth: 0,
+  inputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#ffffff",
     borderRadius: 12,
     paddingHorizontal: 16,
+  },
+  inputIcon: {
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    borderWidth: 0,
     paddingVertical: 14,
     fontSize: 16,
     color: "#1a1a1a",
@@ -282,6 +297,11 @@ const styles = StyleSheet.create({
     borderColor: "#FF3B30",
   },
   passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#ffffff",
+    borderRadius: 12,
+    paddingHorizontal: 16,
     position: "relative",
   },
   passwordInput: {

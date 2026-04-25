@@ -17,7 +17,8 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CheckBox } from 'react-native-elements';
 
-import { phonenumberValidator } from '../../helpers/phonenumberValidator';
+import { Feather } from "@expo/vector-icons";
+
 import { passwordValidator } from '../../helpers/passwordValidator';
 import { emailValidator } from '../../helpers/emailValidator';
 import {fullnameValidator} from '../../helpers/fullnameValidator';
@@ -26,7 +27,6 @@ const SignUpScreen = () => {
   const router = useRouter();
   // State variables
   const [fullName, setFullName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -37,7 +37,6 @@ const SignUpScreen = () => {
   
   // Error states
   const [fullNameError, setFullNameError] = useState('');
-  const [phoneError, setPhoneError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
@@ -46,15 +45,7 @@ const SignUpScreen = () => {
   const validateFullName = (text: string) => {
     setFullName(text);
     const error = fullnameValidator(text);
-    setPhoneError(error);
-    return !error;
-  };
-
-  // Validate phone number
-  const validatePhoneNumber = (text: string) => {
-    setPhoneNumber(text);
-    const error = phonenumberValidator(text);
-    setPhoneError(error);
+    setFullNameError(error);
     return !error;
   };
 
@@ -105,13 +96,12 @@ const SignUpScreen = () => {
   const handleSignUp = async () => {
     // Validate all fields
     const isFullNameValid = validateFullName(fullName);
-    const isPhoneValid = validatePhoneNumber(phoneNumber);
     const isEmailValid = validateEmail(email);
     const isPasswordValid = validatePassword(password);
     const isConfirmPasswordValid = validateConfirmPassword(confirmPassword);
     const isTermsAccepted = validateTerms();
     
-    if (!isFullNameValid || !isPhoneValid || !isEmailValid || 
+    if (!isFullNameValid || !isEmailValid || 
         !isPasswordValid || !isConfirmPasswordValid ) {
       Alert.alert('Validation Error', 'Please fix all errors before continuing');
       return;
@@ -129,7 +119,6 @@ const SignUpScreen = () => {
       // Handle sign up logic here
       console.log('Sign Up data:', { 
         fullName, 
-        phoneNumber, 
         email, 
         password 
       });
@@ -191,51 +180,38 @@ const SignUpScreen = () => {
 
             {/* Full Name Input */}
             <View style={styles.inputContainer}>
-              <TextInput
-                style={[styles.input, fullNameError ? styles.inputError : null]}
-                placeholder="Full Name"
-                placeholderTextColor="#999"
-                value={fullName}
-                onChangeText={validateFullName}
-                editable={!isLoading}
-              />
-
-              {/* Full name error appears right here under full name input */}
+              <View style={styles.inputWrapper}>
+                <Feather name="user" size={20} color="#999" style={styles.inputIcon} />
+                <TextInput
+                  style={[styles.input, fullNameError ? styles.inputError : null]}
+                  placeholder="Full Name"
+                  placeholderTextColor="#999"
+                  value={fullName}
+                  onChangeText={validateFullName}
+                  editable={!isLoading}
+                />
+              </View>
               {fullNameError ? (
                 <Text style={styles.errorText}>{fullNameError}</Text>
               ) : null}
               <View style={styles.separator} />
             </View>
 
-            {/* Phone Number Input */}
-            <View style={styles.inputContainer}>
-              <TextInput
-                style={[styles.input, phoneError ? styles.inputError : null]}
-                placeholder="Phone Number"
-                placeholderTextColor="#999"
-                keyboardType="phone-pad"
-                value={phoneNumber}
-                onChangeText={validatePhoneNumber}
-                editable={!isLoading}
-              />
-              {phoneError ? (
-                <Text style={styles.errorText}>{phoneError}</Text>
-              ) : null}
-              <View style={styles.separator} />
-            </View>
-
             {/* Email Input */}
             <View style={styles.inputContainer}>
-              <TextInput
-                style={[styles.input, emailError ? styles.inputError : null]}
-                placeholder="Email"
-                placeholderTextColor="#999"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                value={email}
-                onChangeText={validateEmail}
-                editable={!isLoading}
-              />
+              <View style={styles.inputWrapper}>
+                <Feather name="mail" size={20} color="#999" style={styles.inputIcon} />
+                <TextInput
+                  style={[styles.input, emailError ? styles.inputError : null]}
+                  placeholder="Email"
+                  placeholderTextColor="#999"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  value={email}
+                  onChangeText={validateEmail}
+                  editable={!isLoading}
+                />
+              </View>
               {emailError ? (
                 <Text style={styles.errorText}>{emailError}</Text>
               ) : null}
@@ -245,6 +221,7 @@ const SignUpScreen = () => {
             {/* Password Input */}
             <View style={styles.inputContainer}>
               <View style={styles.passwordContainer}>
+                <Feather name="lock" size={20} color="#999" style={styles.inputIcon} />
                 <TextInput
                   style={[styles.input, styles.passwordInput, passwordError ? styles.inputError : null]}
                   placeholder="Password"
@@ -263,16 +240,17 @@ const SignUpScreen = () => {
                     {showPassword ? '👁️' : '👁️‍🗨️'}
                   </Text>
                 </TouchableOpacity>
-                {passwordError ? (
-                  <Text style={styles.errorText}>{passwordError}</Text>
-                ) : null}
-                <View style={styles.separator} />
               </View>
+              {passwordError ? (
+                <Text style={styles.errorText}>{passwordError}</Text>
+              ) : null}
+              <View style={styles.separator} />
             </View>
 
             {/* Confirm Password Input */}
             <View style={styles.inputContainer}>
               <View style={styles.passwordContainer}>
+                <Feather name="lock" size={20} color="#999" style={styles.inputIcon} />
                 <TextInput
                   style={[styles.input, styles.passwordInput, confirmPasswordError ? styles.inputError : null]}
                   placeholder="Confirm Password"
@@ -291,11 +269,11 @@ const SignUpScreen = () => {
                     {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
                   </Text>
                 </TouchableOpacity>
-                {confirmPasswordError ? (
-                  <Text style={styles.errorText}>{confirmPasswordError}</Text>
-                ) : null}
-                <View style={styles.separator} />
               </View>
+              {confirmPasswordError ? (
+                <Text style={styles.errorText}>{confirmPasswordError}</Text>
+              ) : null}
+              <View style={styles.separator} />
             </View>
 
             {/* Terms and Conditions Checkbox */}
@@ -400,21 +378,34 @@ const styles = StyleSheet.create({
     marginTop:-10,
 
   },
-  input: {
-    borderWidth: 0,
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
     borderRadius: 12,
     paddingHorizontal: 16,
+  },
+  inputIcon: {
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    borderWidth: 0,
     paddingVertical: 14,
     fontSize: 16,
     color: '#1a1a1a',
     backgroundColor: '#ffffff',
   },
   inputError: {
-    borderWidth: 0,
+    borderWidth: 1,
     borderColor: '#FF3B30',
-    marginTop:-20,
   },
   passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    paddingHorizontal: 16,
     position: 'relative',
   },
   passwordInput: {

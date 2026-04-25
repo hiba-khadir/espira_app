@@ -16,7 +16,7 @@ export default function SettingsScreen() {
   const router = useRouter();
 
   return (
-    <SafeAreaView className="flex-1 bg-[#FAFAFA]">
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#FAFAFA' }}>
       <ScrollView contentContainerStyle={{ paddingBottom: 100 }} className="">
         {/* Header */}
         <Header title="settings"></Header>
