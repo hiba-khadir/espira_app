@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { Image } from "expo-image";
-import { useFonts } from 'expo-font';
-import { FormProvider, useForm } from 'react-hook-form';
-import { useRouter } from 'expo-router';
+import { useFonts } from "expo-font";
+import { FormProvider, useForm } from "react-hook-form";
+import { useRouter } from "expo-router";
 import {
   View,
   Text,
@@ -14,22 +14,22 @@ import {
   ScrollView,
   StatusBar,
   Alert,
- } from "react-native";
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { phonenumberValidator } from '../../helpers/phonenumberValidator';
-import { passwordValidator } from '../../helpers/passwordValidator';
+import { phonenumberValidator } from "../../helpers/phonenumberValidator";
+import { passwordValidator } from "../../helpers/passwordValidator";
 
 const LoginScreen = () => {
   const router = useRouter();
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [password, setPassword] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  
+
   // Error states
-  const [phoneError, setPhoneError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  
+  const [phoneError, setPhoneError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
 
@@ -53,68 +53,68 @@ const LoginScreen = () => {
     // Validate both fields before login
     const isPhoneValid = validatePhoneNumber(phoneNumber);
     const isPasswordValid = validatePassword(password);
-    
+
     if (!isPhoneValid || !isPasswordValid) {
-      Alert.alert('Validation Error', 'Please fix the errors before continuing');
+      Alert.alert(
+        "Validation Error",
+        "Please fix the errors before continuing",
+      );
       return;
     }
-    
+
     // Start loading
     setIsLoading(true);
-    
+
     try {
       // Handle login logic here
-      console.log('Login pressed', { phoneNumber, password });
-      
+      console.log("Login pressed", { phoneNumber, password });
+
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
       // If login successful, navigate to home
-      router.replace('/(tabs)');
+      router.replace("/(tabs)");
     } catch (error) {
-      Alert.alert('Login Failed', 'Invalid phone number or password');
+      Alert.alert("Login Failed", "Invalid phone number or password");
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleForgotPassword = () => {
-    console.log('Forgot password pressed');
+    console.log("Forgot password pressed");
   };
 
   const handleSignUp = () => {
-    router.push('/(auth)/sign_in');
+    router.push("/(auth)/sign_in");
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardView}
       >
         <ScrollView
           contentContainerStyle={styles.scrollContainer}
           showsVerticalScrollIndicator={false}
         >
-          {/* Time Display - Top Left */}
-          <Text style={styles.timeText}>9:41</Text>
-
           {/* App Logo/Title */}
           <View style={styles.logoContainer}>
-            <Image 
-              source={require('../../assets/images/logo.png')}
+            <Image
+              source={require("../../assets/images/logo.png")}
               style={styles.logo}
             />
             <Text style={styles.appTitle}>Espira</Text>
           </View>
-          
+
           {/* Picture Section */}
           <View style={styles.pictureSection}>
-            <Image 
-              source={require('../../assets/images/backround.png')}
+            <Image
+              source={require("../../assets/images/backround.png")}
               style={styles.picture1}
-              contentFit='contain'
+              contentFit="contain"
             />
           </View>
 
@@ -143,7 +143,11 @@ const LoginScreen = () => {
             <View style={styles.inputContainer}>
               <View style={styles.passwordContainer}>
                 <TextInput
-                  style={[styles.input, styles.passwordInput, passwordError ? styles.inputError : null]}
+                  style={[
+                    styles.input,
+                    styles.passwordInput,
+                    passwordError ? styles.inputError : null,
+                  ]}
                   placeholder="Password"
                   placeholderTextColor="#999"
                   secureTextEntry={!showPassword}
@@ -157,7 +161,7 @@ const LoginScreen = () => {
                   disabled={isLoading}
                 >
                   <Text style={styles.eyeText}>
-                    {showPassword ? '👁️' : '👁️‍🗨️'}
+                    {showPassword ? "👁️" : "👁️‍🗨️"}
                   </Text>
                 </TouchableOpacity>
                 {passwordError ? (
@@ -177,13 +181,16 @@ const LoginScreen = () => {
             </TouchableOpacity>
 
             {/* Login Button */}
-            <TouchableOpacity 
-              style={[styles.loginButton, isLoading && styles.loginButtonDisabled]} 
+            <TouchableOpacity
+              style={[
+                styles.loginButton,
+                isLoading && styles.loginButtonDisabled,
+              ]}
               onPress={handleLogin}
               disabled={isLoading}
             >
               <Text style={styles.loginButtonText}>
-                {isLoading ? 'Logging in...' : 'Log In'}
+                {isLoading ? "Logging in..." : "Log In"}
               </Text>
             </TouchableOpacity>
 
@@ -204,7 +211,7 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
   },
   keyboardView: {
     flex: 1,
@@ -216,15 +223,15 @@ const styles = StyleSheet.create({
   },
   timeText: {
     fontSize: 16,
-    fontWeight: '500',
-    color: '#000000',
+    fontWeight: "500",
+    color: "#000000",
     marginTop: 8,
     marginBottom: 20,
   },
   logoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: -30,
     marginTop: 0,
   },
@@ -235,19 +242,18 @@ const styles = StyleSheet.create({
   },
   appTitle: {
     fontSize: 42,
-    fontWeight: '700',
-    color: '#1F4E20',
+    fontWeight: "700",
+    color: "#1F4E20",
     letterSpacing: 1,
   },
   pictureSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 5,
     marginLeft: 12,
-
   },
   picture1: {
-    width: '100%',
+    width: "100%",
     height: 200,
   },
   formContainer: {
@@ -255,8 +261,8 @@ const styles = StyleSheet.create({
   },
   loginTitle: {
     fontSize: 20,
-    fontWeight: '600',
-    color: '#1a1a1a',
+    fontWeight: "600",
+    color: "#1a1a1a",
     marginBottom: 10,
   },
   inputContainer: {
@@ -268,21 +274,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 16,
-    color: '#1a1a1a',
-    backgroundColor: '#ffffff',
+    color: "#1a1a1a",
+    backgroundColor: "#ffffff",
   },
   inputError: {
     borderWidth: 1,
-    borderColor: '#FF3B30',
+    borderColor: "#FF3B30",
   },
   passwordContainer: {
-    position: 'relative',
+    position: "relative",
   },
   passwordInput: {
     paddingRight: 50,
   },
   eyeButton: {
-    position: 'absolute',
+    position: "absolute",
     right: 16,
     top: 14,
   },
@@ -291,56 +297,56 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: 1,
-    backgroundColor: '#E7E3E0',
+    backgroundColor: "#E7E3E0",
     marginVertical: 20,
   },
   forgotPasswordContainer: {
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
     marginBottom: 32,
   },
   forgotPasswordText: {
     fontSize: 14,
-    color: '#4C5F66',
-    fontWeight: '500',
-    alignSelf: 'center',
+    color: "#4C5F66",
+    fontWeight: "500",
+    alignSelf: "center",
   },
   loginButton: {
     width: 255,
     height: 65,
-    backgroundColor: '#1F4E20',
+    backgroundColor: "#1F4E20",
     borderRadius: 40,
     paddingVertical: 20,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 5,
     elevation: 4,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   loginButtonDisabled: {
-    backgroundColor: '#95A5A6',
+    backgroundColor: "#95A5A6",
     opacity: 0.7,
   },
   loginButtonText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   signUpContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 16,
   },
   signUpText: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
   signUpLink: {
     fontSize: 14,
-    color: '#000000',
-    fontWeight: '600',
+    color: "#000000",
+    fontWeight: "600",
   },
   errorText: {
-    color: '#FF3B30',
+    color: "#FF3B30",
     fontSize: 12,
     marginTop: 4,
     marginLeft: 16,
