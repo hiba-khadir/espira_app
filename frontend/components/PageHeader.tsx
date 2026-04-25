@@ -1,4 +1,5 @@
 import { Image } from "expo-image";
+import { useRouter } from "expo-router";
 import React from "react";
 import {
   ImageSourcePropType,
@@ -17,9 +18,11 @@ type HeaderProps = {
 };
 
 export default function Header({ title, onBackPress }: HeaderProps) {
+  const router = useRouter();
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={onBackPress} style={styles.iconButton}>
+      <TouchableOpacity onPress={() => router.back()} style={styles.iconButton}>
         <Image
           source={ARROW_ICON}
           style={styles.arrowIcon}
