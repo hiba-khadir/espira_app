@@ -237,13 +237,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingBottom: 32,
   },
-  timeText: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: "#000000",
-    marginTop: 8,
-    marginBottom: 20,
-  },
   logoContainer: {
     flexDirection: "row",
     alignItems: "center",
