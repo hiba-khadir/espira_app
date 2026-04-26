@@ -14,7 +14,7 @@ export default function TabLayout() {
     <Tabs
       tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: "light",
         headerShown: false,
         tabBarButton: HapticTab,
       }}
@@ -30,9 +30,9 @@ export default function TabLayout() {
       />
       <Tabs.Screen name="statistics" />
       <Tabs.Screen
-        name="explore"
+        name="statistics"
         options={{
-          title: "Explore",
+          title: "statistics",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="paperplane.fill" color={color} />
           ),

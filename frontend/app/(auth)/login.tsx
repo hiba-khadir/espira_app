@@ -126,7 +126,12 @@ const LoginScreen = () => {
             {/* Email Input */}
             <View style={styles.inputContainer}>
               <View style={styles.inputWrapper}>
-                <Feather name="mail" size={20} color="#999" style={styles.inputIcon} />
+                <Feather
+                  name="mail"
+                  size={20}
+                  color="#999"
+                  style={styles.inputIcon}
+                />
                 <TextInput
                   style={[styles.input, emailError ? styles.inputError : null]}
                   placeholder="Email"
@@ -147,7 +152,12 @@ const LoginScreen = () => {
             {/* Password Input */}
             <View style={styles.inputContainer}>
               <View style={styles.passwordContainer}>
-                <Feather name="lock" size={20} color="#999" style={styles.inputIcon} />
+                <Feather
+                  name="lock"
+                  size={20}
+                  color="#999"
+                  style={styles.inputIcon}
+                />
                 <TextInput
                   style={[
                     styles.input,

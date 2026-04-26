@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { Image } from "expo-image";
-import { useFonts } from 'expo-font';
-import { useRouter } from 'expo-router';
+import { useFonts } from "expo-font";
+import { useRouter } from "expo-router";
 import {
   View,
   Text,
@@ -13,33 +13,33 @@ import {
   ScrollView,
   StatusBar,
   Alert,
- } from "react-native";
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { CheckBox } from 'react-native-elements';
+import { CheckBox } from "react-native-elements";
 
 import { Feather } from "@expo/vector-icons";
 
-import { passwordValidator } from '../../helpers/passwordValidator';
-import { emailValidator } from '../../helpers/emailValidator';
-import {fullnameValidator} from '../../helpers/fullnameValidator';
+import { passwordValidator } from "../../helpers/passwordValidator";
+import { emailValidator } from "../../helpers/emailValidator";
+import { fullnameValidator } from "../../helpers/fullnameValidator";
 
 const SignUpScreen = () => {
   const router = useRouter();
   // State variables
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // Error states
-  const [fullNameError, setFullNameError] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [fullNameError, setFullNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
 
   // Validate full name
   const validateFullName = (text: string) => {
@@ -62,7 +62,7 @@ const SignUpScreen = () => {
     setPassword(text);
     const error = passwordValidator(text);
     setPasswordError(error);
-    
+
     // Re-validate confirm password if it exists
     if (confirmPassword) {
       validateConfirmPassword(confirmPassword);
@@ -74,20 +74,23 @@ const SignUpScreen = () => {
   const validateConfirmPassword = (text: string) => {
     setConfirmPassword(text);
     if (!text) {
-      setConfirmPasswordError('Please confirm your password');
+      setConfirmPasswordError("Please confirm your password");
       return false;
     } else if (text !== password) {
-      setConfirmPasswordError('Passwords do not match');
+      setConfirmPasswordError("Passwords do not match");
       return false;
     }
-    setConfirmPasswordError('');
+    setConfirmPasswordError("");
     return true;
   };
 
   // Validate terms acceptance
   const validateTerms = () => {
     if (!isChecked) {
-      Alert.alert('Terms Required', 'Please accept the Terms and Conditions to continue');
+      Alert.alert(
+        "Terms Required",
+        "Please accept the Terms and Conditions to continue",
+      );
       return false;
     }
     return true;
@@ -100,77 +103,86 @@ const SignUpScreen = () => {
     const isPasswordValid = validatePassword(password);
     const isConfirmPasswordValid = validateConfirmPassword(confirmPassword);
     const isTermsAccepted = validateTerms();
-    
-    if (!isFullNameValid || !isEmailValid || 
-        !isPasswordValid || !isConfirmPasswordValid ) {
-      Alert.alert('Validation Error', 'Please fix all errors before continuing');
+
+    if (
+      !isFullNameValid ||
+      !isEmailValid ||
+      !isPasswordValid ||
+      !isConfirmPasswordValid
+    ) {
+      Alert.alert(
+        "Validation Error",
+        "Please fix all errors before continuing",
+      );
       return;
     }
 
-    if(!isTermsAccepted){
-      Alert.alert('Terms Required', 'Please accept the Terms and Conditions to continue');
-      return ;
+    if (!isTermsAccepted) {
+      Alert.alert(
+        "Terms Required",
+        "Please accept the Terms and Conditions to continue",
+      );
+      return;
     }
-    
+
     // Start loading
     setIsLoading(true);
-    
+
     try {
       // Handle sign up logic here
-      console.log('Sign Up data:', { 
-        fullName, 
-        email, 
-        password 
+      console.log("Sign Up data:", {
+        fullName,
+        email,
+        password,
       });
-      
+
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
       // If sign up successful
       Alert.alert(
-        'Success', 
-        'Account created successfully! Please verify your email.',
-        [{ text: 'OK', onPress: () => router.replace('/(auth)/login') }]
+        "Success",
+        "Account created successfully! Please verify your email.",
+        [{ text: "OK", onPress: () => router.replace("/(auth)/login") }],
       );
       // Navigate to login screen
     } catch (error) {
-      Alert.alert('Sign Up Failed', 'An error occurred. Please try again.');
+      Alert.alert("Sign Up Failed", "An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleLogin = () => {
-    router.push('/(auth)/login');
+    router.push("/(auth)/login");
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardView}
       >
         <ScrollView
           contentContainerStyle={styles.scrollContainer}
           showsVerticalScrollIndicator={false}
         >
-
           {/* App Logo/Title */}
           <View style={styles.logoContainer}>
-            <Image 
-              source={require('../../assets/images/logo.png')}
+            <Image
+              source={require("../../assets/images/logo.png")}
               style={styles.logo}
             />
             <Text style={styles.appTitle}>Espira</Text>
           </View>
-          
+
           {/* Picture Section */}
           <View style={styles.pictureSection}>
-            <Image 
-              source={require('../../assets/images/backround.png')}
+            <Image
+              source={require("../../assets/images/backround.png")}
               style={styles.picture1}
-              contentFit='contain'
+              contentFit="contain"
             />
           </View>
 
@@ -181,9 +193,17 @@ const SignUpScreen = () => {
             {/* Full Name Input */}
             <View style={styles.inputContainer}>
               <View style={styles.inputWrapper}>
-                <Feather name="user" size={20} color="#999" style={styles.inputIcon} />
+                <Feather
+                  name="user"
+                  size={20}
+                  color="#999"
+                  style={styles.inputIcon}
+                />
                 <TextInput
-                  style={[styles.input, fullNameError ? styles.inputError : null]}
+                  style={[
+                    styles.input,
+                    fullNameError ? styles.inputError : null,
+                  ]}
                   placeholder="Full Name"
                   placeholderTextColor="#999"
                   value={fullName}
@@ -200,7 +220,12 @@ const SignUpScreen = () => {
             {/* Email Input */}
             <View style={styles.inputContainer}>
               <View style={styles.inputWrapper}>
-                <Feather name="mail" size={20} color="#999" style={styles.inputIcon} />
+                <Feather
+                  name="mail"
+                  size={20}
+                  color="#999"
+                  style={styles.inputIcon}
+                />
                 <TextInput
                   style={[styles.input, emailError ? styles.inputError : null]}
                   placeholder="Email"
@@ -221,9 +246,18 @@ const SignUpScreen = () => {
             {/* Password Input */}
             <View style={styles.inputContainer}>
               <View style={styles.passwordContainer}>
-                <Feather name="lock" size={20} color="#999" style={styles.inputIcon} />
+                <Feather
+                  name="lock"
+                  size={20}
+                  color="#999"
+                  style={styles.inputIcon}
+                />
                 <TextInput
-                  style={[styles.input, styles.passwordInput, passwordError ? styles.inputError : null]}
+                  style={[
+                    styles.input,
+                    styles.passwordInput,
+                    passwordError ? styles.inputError : null,
+                  ]}
                   placeholder="Password"
                   placeholderTextColor="#999"
                   secureTextEntry={!showPassword}
@@ -237,7 +271,7 @@ const SignUpScreen = () => {
                   disabled={isLoading}
                 >
                   <Text style={styles.eyeText}>
-                    {showPassword ? '👁️' : '👁️‍🗨️'}
+                    {showPassword ? "👁️" : "👁️‍🗨️"}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -250,9 +284,18 @@ const SignUpScreen = () => {
             {/* Confirm Password Input */}
             <View style={styles.inputContainer}>
               <View style={styles.passwordContainer}>
-                <Feather name="lock" size={20} color="#999" style={styles.inputIcon} />
+                <Feather
+                  name="lock"
+                  size={20}
+                  color="#999"
+                  style={styles.inputIcon}
+                />
                 <TextInput
-                  style={[styles.input, styles.passwordInput, confirmPasswordError ? styles.inputError : null]}
+                  style={[
+                    styles.input,
+                    styles.passwordInput,
+                    confirmPasswordError ? styles.inputError : null,
+                  ]}
                   placeholder="Confirm Password"
                   placeholderTextColor="#999"
                   secureTextEntry={!showConfirmPassword}
@@ -266,7 +309,7 @@ const SignUpScreen = () => {
                   disabled={isLoading}
                 >
                   <Text style={styles.eyeText}>
-                    {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
+                    {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -290,13 +333,16 @@ const SignUpScreen = () => {
             </View>
 
             {/* Sign Up Button */}
-            <TouchableOpacity 
-              style={[styles.signUpButton, isLoading && styles.signUpButtonDisabled]} 
+            <TouchableOpacity
+              style={[
+                styles.signUpButton,
+                isLoading && styles.signUpButtonDisabled,
+              ]}
               onPress={handleSignUp}
               disabled={isLoading}
             >
               <Text style={styles.signUpButtonText}>
-                {isLoading ? 'Creating Account...' : 'Sign Up'}
+                {isLoading ? "Creating Account..." : "Sign Up"}
               </Text>
             </TouchableOpacity>
 
@@ -317,7 +363,7 @@ const SignUpScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
   },
   keyboardView: {
     flex: 1,
@@ -329,15 +375,15 @@ const styles = StyleSheet.create({
   },
   timeText: {
     fontSize: 16,
-    fontWeight: '500',
-    color: '#000000',
+    fontWeight: "500",
+    color: "#000000",
     marginTop: 8,
     marginBottom: 20,
   },
   logoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: -30,
     marginTop: 50,
   },
@@ -348,20 +394,18 @@ const styles = StyleSheet.create({
   },
   appTitle: {
     fontSize: 42,
-    fontWeight: '700',
-    color: '#1F4E20',
+    fontWeight: "700",
+    color: "#1F4E20",
     letterSpacing: 1,
-
   },
   pictureSection: {
-   alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 5,
     marginLeft: 12,
-
   },
   picture1: {
-    width: '100%',
+    width: "100%",
     height: 200,
   },
   formContainer: {
@@ -369,19 +413,18 @@ const styles = StyleSheet.create({
   },
   signUpTitle: {
     fontSize: 20,
-    fontWeight: '600',
-    color: '#1a1a1a',
+    fontWeight: "600",
+    color: "#1a1a1a",
     marginBottom: 20,
   },
   inputContainer: {
     marginBottom: 20,
-    marginTop:-10,
-
+    marginTop: -10,
   },
   inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#ffffff',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#ffffff",
     borderRadius: 12,
     paddingHorizontal: 16,
   },
@@ -393,26 +436,26 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     paddingVertical: 14,
     fontSize: 16,
-    color: '#1a1a1a',
-    backgroundColor: '#ffffff',
+    color: "#1a1a1a",
+    backgroundColor: "#ffffff",
   },
   inputError: {
     borderWidth: 1,
-    borderColor: '#FF3B30',
+    borderColor: "#FF3B30",
   },
   passwordContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#ffffff',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#ffffff",
     borderRadius: 12,
     paddingHorizontal: 16,
-    position: 'relative',
+    position: "relative",
   },
   passwordInput: {
     paddingRight: 50,
   },
   eyeButton: {
-    position: 'absolute',
+    position: "absolute",
     right: 16,
     top: 14,
   },
@@ -421,64 +464,63 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: 1,
-    backgroundColor: '#E7E3E0',
+    backgroundColor: "#E7E3E0",
     marginVertical: 10,
   },
   signUpButton: {
     width: 255,
     height: 65,
-    backgroundColor: '#1F4E20',
+    backgroundColor: "#1F4E20",
     borderRadius: 40,
     paddingVertical: 20,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 5,
     elevation: 4,
-    alignSelf: 'center',
+    alignSelf: "center",
     marginTop: 10,
   },
   signUpButtonDisabled: {
-    backgroundColor: '#95A5A6',
+    backgroundColor: "#95A5A6",
     opacity: 0.7,
   },
   signUpButtonText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   loginContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 16,
   },
   loginText: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
   loginLink: {
     fontSize: 14,
-    color: '#1F4E20',
-    fontWeight: '600',
+    color: "#1F4E20",
+    fontWeight: "600",
   },
   errorText: {
-    color: '#FF3B30',
+    color: "#FF3B30",
     fontSize: 12,
     marginTop: 4,
     marginLeft: 16,
   },
   checkboxContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 30,
     marginLeft: 30,
   },
-    ContractText: {
+  ContractText: {
     fontSize: 14,
-    color: '#666',
-    fontWeight: '200',
-
+    color: "#666",
+    fontWeight: "200",
   },
   checkbox: {
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     borderWidth: 0,
     padding: 0,
   },

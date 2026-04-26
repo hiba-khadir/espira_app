@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Image } from "expo-image";
-import { View, Text, TouchableOpacity, Dimensions, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Dimensions,
+  ActivityIndicator,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useRouter, Redirect } from "expo-router";
@@ -18,13 +24,15 @@ const slides = [
   {
     title: "Vision",
     image: require("@/assets/images/vision.png"),
-    description: "Espira is a smart greenhouse management app designed to make remote and effortless plant care a reality. Developed by a passionate young team of six computer science students, Espira allows users to monitor and control their greenhouse environment from anywhere  Espira simplifies sustainable gardening by combining intuitive design with intelligent automation.",
+    description:
+      "Espira is a smart greenhouse management app designed to make remote and effortless plant care a reality. Developed by a passionate young team of six computer science students, Espira allows users to monitor and control their greenhouse environment from anywhere  Espira simplifies sustainable gardening by combining intuitive design with intelligent automation.",
     isStart: false,
   },
   {
     title: "Mission",
     image: require("@/assets/images/mission.png"),
-    description: "Our goal is to remove the guesswork from plant care, helping users save time, reduce resource waste, and grow healthier plants — all while learning from real-time data and alerts. With Espira, managing a green space becomes not just easier, but smarter and more enjoyable and eco friendly.",
+    description:
+      "Our goal is to remove the guesswork from plant care, helping users save time, reduce resource waste, and grow healthier plants — all while learning from real-time data and alerts. With Espira, managing a green space becomes not just easier, but smarter and more enjoyable and eco friendly.",
     isStart: false,
   },
 ];
@@ -38,7 +46,7 @@ export default function OnboardingScreen() {
     const checkFirstLaunch = async () => {
       // TODO: Remove the next line after testing onboarding — it forces onboarding to show every time
       await AsyncStorage.removeItem("alreadyLaunched");
-      
+
       const value = await AsyncStorage.getItem("alreadyLaunched");
       if (value === null) {
         setIsFirstLaunch(true);
@@ -106,7 +114,9 @@ export default function OnboardingScreen() {
                 onPress={nextSlide}
                 className="bg-[#1C5125] py-4 px-12 rounded-xl items-center justify-center shadow-sm"
               >
-                <Text className="text-white font-bold text-lg">Get Started</Text>
+                <Text className="text-white font-bold text-lg">
+                  Get Started
+                </Text>
               </TouchableOpacity>
             ) : (
               <View className="flex-row justify-between w-full">
@@ -133,7 +143,9 @@ export default function OnboardingScreen() {
               <View
                 key={index}
                 className={`w-3 h-3 rounded-full border border-[#1C5125] ${
-                  currentSlideIndex === index ? "bg-[#1C5125]" : "bg-transparent"
+                  currentSlideIndex === index
+                    ? "bg-[#1C5125]"
+                    : "bg-transparent"
                 }`}
                 style={{ marginHorizontal: 4 }}
               />
@@ -142,7 +154,9 @@ export default function OnboardingScreen() {
 
           {/* Bottom Logo */}
           <View className="flex-row items-center justify-center mb-4">
-            <Text className="text-3xl font-bold text-[#1C5125] mr-2">Espira</Text>
+            <Text className="text-3xl font-bold text-[#1C5125] mr-2">
+              Espira
+            </Text>
             <Image
               source={require("@/assets/images/Espira logo.png")}
               style={{ width: 32, height: 32 }}
