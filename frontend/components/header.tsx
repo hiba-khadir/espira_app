@@ -5,12 +5,21 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function Header() {
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  const date = new Date();
   const router = useRouter();
   return (
     <View style={styles.header} className="p-8">
       <View>
         <Text style={styles.headerTitle}>Hi Mahmoud</Text>
-        <Text style={styles.headerDate}>Monday 18, 2023</Text>
+        <Text style={styles.headerDate}>
+          {new Intl.DateTimeFormat("en-US", options).format(date)}
+        </Text>
       </View>
       <TouchableOpacity style={styles.iconButton} activeOpacity={0.7}>
         <MaterialIcons
