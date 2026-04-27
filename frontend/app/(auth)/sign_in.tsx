@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Image } from "expo-image";
-import { useFonts } from "expo-font";
 import { useRouter } from "expo-router";
 import {
   View,
@@ -18,7 +17,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { CheckBox } from "react-native-elements";
 
 import { Feather } from "@expo/vector-icons";
-
+import { useAppDispatch, useAppSelector } from "@/hooks/useAppDispatch";
+import { setUser, setLoading, setError } from "@/stores/slices/authSlice";
+import { registerAPI } from "@/api/auth";
 import { passwordValidator } from "../../helpers/passwordValidator";
 import { emailValidator } from "../../helpers/emailValidator";
 import { fullnameValidator } from "../../helpers/fullnameValidator";
@@ -26,6 +27,8 @@ import { fullnameValidator } from "../../helpers/fullnameValidator";
 const SignUpScreen = () => {
   const router = useRouter();
   // State variables
+  const dispatch = useAppDispatch();
+  const { isLoading, error } = useAppSelector((state) => state.auth);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,7 +36,6 @@ const SignUpScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   // Error states
   const [fullNameError, setFullNameError] = useState("");
@@ -124,32 +126,13 @@ const SignUpScreen = () => {
       );
       return;
     }
-
-    // Start loading
-    setIsLoading(true);
+    dispatch(setLoading(true));
 
     try {
-      // Handle sign up logic here
-      console.log("Sign Up data:", {
-        fullName,
-        email,
-        password,
-      });
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // If sign up successful
-      Alert.alert(
-        "Success",
-        "Account created successfully! Please verify your email.",
-        [{ text: "OK", onPress: () => router.replace("/(auth)/login") }],
-      );
-      // Navigate to login screen
+      const respone = await registerAPI({ fullName, email, password });
+      dispatch(setUser(respone));
     } catch (error) {
       Alert.alert("Sign Up Failed", "An error occurred. Please try again.");
-    } finally {
-      setIsLoading(false);
     }
   };
 
