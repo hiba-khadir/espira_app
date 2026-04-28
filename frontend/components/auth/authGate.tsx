@@ -10,11 +10,15 @@ export default function AuthGate() {
   useEffect(() => {
     const inAuthGroup = segments[0] === "(auth)";
 
-    if (!user && !inAuthGroup) {
-      router.replace("/(auth)/login");
-    } else if (user && inAuthGroup) {
-      router.replace("/(tabs)/statistics");
-    }
+    const timeout = setTimeout(() => {
+      if (!user && !inAuthGroup) {
+        router.replace("/(auth)/login");
+      } else if (user && inAuthGroup) {
+        router.replace("/(tabs)/statistics");
+      }
+    }, 0);
+
+    return () => clearTimeout(timeout);
   }, [user, segments]);
 
   return null;

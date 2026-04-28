@@ -132,13 +132,14 @@ const SignUpScreen = () => {
       const respone = await registerAPI({ fullName, email, password });
       dispatch(setUser(respone));
     } catch (error) {
-      Alert.alert("Sign Up Failed", "An error occurred. Please try again.");
+      console.log(error);
+      Alert.alert("Sign Up Failed", "An error occurred. Please try again."); // to not block testing
     }
   };
 
-  const handleLogin = () => {
-    router.push("/(auth)/login");
-  };
+  // const handleLogin = () => {
+  //   router.push("/(tabs)/statistics");
+  // };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -332,7 +333,7 @@ const SignUpScreen = () => {
             {/* Login Link */}
             <View style={styles.loginContainer}>
               <Text style={styles.loginText}>Already have an account? </Text>
-              <TouchableOpacity onPress={handleLogin} disabled={isLoading}>
+              <TouchableOpacity disabled={isLoading}>
                 <Text style={styles.loginLink}>Log In</Text>
               </TouchableOpacity>
             </View>
