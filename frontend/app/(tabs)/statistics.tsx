@@ -1,23 +1,25 @@
+import { Text } from "@react-navigation/elements";
+
 import React, { useState } from "react";
 import { Image } from "expo-image";
 import {
   Platform,
-  StyleSheet,
-  View,
-  TouchableOpacity,
   ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import ParallaxScrollView from "@/components/parallax-scroll-view";
-import { Text } from "@react-navigation/elements";
-import Header from "@/components/header";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
+  VictoryArea,
   VictoryAxis,
   VictoryChart,
-  VictoryArea,
   VictoryPie,
 } from "victory-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import Header from "@/components/PageHeader";
+import ParallaxScrollView from "@/components/parallax-scroll-view";
 import calendarEvent from "@/components/ui/calendar";
+
 const months = [
   "Jan",
   "Feb",
@@ -282,6 +284,7 @@ export default function Statistics() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
+        <Header title="statistics"></Header>
         <Graphs></Graphs>
         <Chart></Chart>
         <DailyUsage></DailyUsage>

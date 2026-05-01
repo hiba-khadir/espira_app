@@ -4,7 +4,7 @@ const calendarEvent = () => {
   return (
     <Svg
       width="24"
-      height="24"
+      height="23"
       viewBox="0 0 24 24"
       fill="none"
       stroke="#BDFFA7"
