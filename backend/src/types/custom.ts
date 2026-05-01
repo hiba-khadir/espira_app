@@ -8,7 +8,8 @@ interface DeviceFilters {
 
 interface CreateDeviceData {
   name: string;
-  subtypeId: number;
+  type: DeviceType;
+  unit?: string;
   stateTopic: string;
   controlTopic?: string;
 }
@@ -22,7 +23,6 @@ interface UpdateDeviceData {
 interface UpdateDeviceStateData {
   isOn: boolean;
   intensity?: number;
-  colorHex?: string;
 }
 
-export {UpdateDeviceData , UpdateDeviceStateData , DeviceFilters, CreateDeviceData}
+export { UpdateDeviceData, UpdateDeviceStateData, DeviceFilters, CreateDeviceData }

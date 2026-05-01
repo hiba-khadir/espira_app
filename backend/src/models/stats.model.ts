@@ -5,11 +5,10 @@ const prisma = new PrismaClient();
 const getSensorStats = async (deviceId: number, userId: string, range?: string) => {
   const device = await prisma.device.findFirst({
     where: { id: deviceId, userId },
-    include: { subtype: true }
   });
 
   if (!device) return null;
-  if (device.subtype.type !== 'sensor') return { error: 'Device is not a sensor' };
+  if (device.type !== 'sensor') return { error: 'Device is not a sensor' };
 
   let days: number | undefined;
   if (range) {

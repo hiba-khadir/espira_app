@@ -41,12 +41,12 @@ const getDeviceByIdController = async (req: Request, res: Response): Promise<voi
 const createDeviceController = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.user.id;
-    const { name, subtypeId, stateTopic, controlTopic } = req.body;
-    if (!name || !subtypeId || !stateTopic) {
-      res.status(400).json({ message: 'name, subtypeId and stateTopic are required' }); return;
+    const { name, type, unit, stateTopic, controlTopic } = req.body;
+    if (!name || !type || !stateTopic) {
+      res.status(400).json({ message: 'name, type and stateTopic are required' }); return;
     }
-    const device = await createDevice(userId, { name, subtypeId, stateTopic, controlTopic });
-    if (!device) { res.status(400).json({ message: 'Invalid subtypeId' }); return; }
+    const device = await createDevice(userId, { name, type, unit, stateTopic, controlTopic });
+    if (!device) { res.status(400).json({ message: 'Invalid device type' }); return; }
     // notify MQTT service to subscribe to this device's topics
     mqttEvents.emit('device:created', device);
     res.status(201).json(device);
@@ -100,7 +100,7 @@ const updateDeviceStateController = async (req: Request, res: Response): Promise
   //params
   const userId = req.user.id;
   const deviceId = parseInt(req.params.id as string);
-  const { isOn, intensity, colorHex } = req.body;
+  const { isOn, intensity} = req.body;
   try {
     if (isOn === undefined) {
       res.status(400).json({ message: 'isOn is required' }); 
@@ -118,9 +118,9 @@ const updateDeviceStateController = async (req: Request, res: Response): Promise
       return; 
     }
 
-    await publishCommandAndWait(deviceId, device.controlTopic, { isOn, intensity, colorHex });
+    await publishCommandAndWait(deviceId, device.controlTopic, { isOn, intensity});
 
-    await updateDeviceState(deviceId, userId, { isOn, intensity, colorHex });
+    await updateDeviceState(deviceId, userId, { isOn, intensity});
     await logDeviceHistory(deviceId, userId, isOn);
 
     res.status(200).json({ message: 'State updated' });
@@ -148,21 +148,8 @@ const getDeviceHistoryController = async (req: Request, res: Response): Promise<
   }
 };
 
-// GET /api/devices/:id/subtype
-const getDeviceSubtypeController = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const userId = req.user.id;
-    const deviceId = parseInt(req.params.id as string);
-    const result = await getDeviceSubtype(deviceId, userId);
-    if (!result) { res.status(404).json({ message: 'Device not found' }); return; }
-    res.status(200).json(result.subtype);
-  } catch (err: any) {
-    res.status(500).json({ message: err.message });
-  }
-};
-
 export {
   getAllDevicesController, getDeviceByIdController, createDeviceController,
   updateDeviceController, deleteDeviceController, getDeviceStateController,
-  updateDeviceStateController, getDeviceHistoryController, getDeviceSubtypeController
+  updateDeviceStateController, getDeviceHistoryController
 };

@@ -1,7 +1,7 @@
 ### Variables
 @baseUrl = http://localhost:3000/api
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJpZDEiLCJpYXQiOjE3NzcwMjgwNjcsImV4cCI6MTc3NzYzMjg2N30.WvUycm0UoziyNryTzgik3byVHo26SH3ZIqqIAGmIt-k
-@deviceId = 2
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJpZDEiLCJpYXQiOjE3Nzc2NjgzOTksImV4cCI6MTc3ODI3MzE5OX0.w_QXYrvX5YJXvmgLZlrJusKv7XYT9xi0fpg5Q1_R7_I
+@deviceId = id1
 
 ###
 
@@ -36,7 +36,7 @@ Content-Type: application/json
 
 {
   "name": "Main Led Light",
-  "subtypeId": 1,
+  "type": "actuator",
   "stateTopic": "devices/1/state",
   "controlTopic": "devices/1/control"
 }
@@ -50,7 +50,7 @@ Content-Type: application/json
 
 {
   "name": "Temperature Sensor",
-  "subtypeId": 5,
+  "type": "sensor",
   "stateTopic": "devices/3/state"
 }
 
@@ -68,7 +68,7 @@ Content-Type: application/json
 ###
 
 ### GET device by id
-GET {{baseUrl}}/devices/{{deviceId}}
+GET {{baseUrl}}/devices/2
 Authorization: Bearer {{token}}
 
 ###
@@ -105,9 +105,7 @@ Content-Type: application/json
 
 {
   "isOn": true,
-  "intensity": 80,
-  "colorHex": "#FF5733"
-
+  "intensity": 80
 }
 
 ###
@@ -135,7 +133,7 @@ Content-Type: application/json
 ###
 
 ### GET device history
-GET {{baseUrl}}/devices/{{deviceId}}/history
+GET {{baseUrl}}/devices/2/history
 Authorization: Bearer {{token}}
 
 ###

@@ -52,11 +52,11 @@ function connectMqtt() {
     const device = await getDeviceByTopic(topic);
     if (!device) return;
 
-    if (device.subtype.type === 'actuator' && topic === device.stateTopic) {
+    if (device.type === 'actuator' && topic === device.stateTopic) {
       await handleActuatorConfirmation(device.id, message);
     }
 
-    if (device.subtype.type === 'sensor' && topic === device.stateTopic) {
+    if (device.type === 'sensor' && topic === device.stateTopic) {
       await handleSensorReading(device, message, client);
     }
   });

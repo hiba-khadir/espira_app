@@ -1,9 +1,7 @@
 import { MqttClient } from 'mqtt';
-import { Device, DeviceSubtype } from '../../generated/prisma';
+import { Device} from '../../generated/prisma';
 import { confirmActuatorState, recordSensorReading, updateConnectionStatus } from '../../models/device.model';
 import { resolveCommand } from './mqtt.index';
-
-type DeviceWithSubtype = Device & { subtype: DeviceSubtype }; //device and its subtype attached
 
 // handles confirmation or error msg from esp32
 async function handleActuatorConfirmation(deviceId: number, message: any) {
@@ -20,7 +18,7 @@ async function handleActuatorConfirmation(deviceId: number, message: any) {
 }
 
 //parse sensor value 
-async function handleSensorReading(device: DeviceWithSubtype, message: any, client: MqttClient) {
+async function handleSensorReading(device: Device, message: any, client: MqttClient) {
   const value = parseFloat(message.value);
   if (isNaN(value)) {
     console.warn(`[mqtt] Sensor ${device.id} sent invalid value:`, message);
