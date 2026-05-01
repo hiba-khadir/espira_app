@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Image } from "expo-image";
-import { useFonts } from "expo-font";
-import { FormProvider, useForm } from "react-hook-form";
+import { useAppDispatch, useAppSelector } from "../../hooks/useAppDispatch";
+import { setUser, setError, setLoading } from "@/stores/slices/authSlice";
 import { useRouter } from "expo-router";
 import {
   View,
@@ -20,8 +20,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { emailValidator } from "../../helpers/emailValidator";
 import { passwordValidator } from "../../helpers/passwordValidator";
 import { Feather } from "@expo/vector-icons";
+import { loginAPI, registerAPI } from "@/api/auth";
 
 const LoginScreen = () => {
+  const dispatch = useAppDispatch();
+  const { isLoading, error } = useAppSelector((state) => state.auth);
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,9 +33,6 @@ const LoginScreen = () => {
   // Error states
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-
-  // Loading state
-  const [isLoading, setIsLoading] = useState(false);
 
   // Validate email in real-time
   const validateEmail = (text: string) => {
@@ -62,23 +62,12 @@ const LoginScreen = () => {
       );
       return;
     }
-
-    // Start loading
-    setIsLoading(true);
-
+    dispatch(setLoading(true));
     try {
-      // Handle login logic here
-      console.log("Login pressed", { email, password });
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // If login successful, navigate to home
-      router.replace("/(tabs)");
+      const response = await loginAPI({ email, password });
+      dispatch(setUser(response));
     } catch (error) {
       Alert.alert("Login Failed", "Invalid email or password");
-    } finally {
-      setIsLoading(false);
     }
   };
 

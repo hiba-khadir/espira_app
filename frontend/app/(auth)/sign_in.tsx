@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
@@ -16,11 +17,37 @@ import {
 } from "react-native";
 import { CheckBox } from "react-native-elements";
 import { SafeAreaView } from "react-native-safe-area-context";
+=======
+import React, { useState } from "react";
+import { Image } from "expo-image";
+import { useRouter } from "expo-router";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StatusBar,
+  Alert,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { CheckBox } from "react-native-elements";
+
+import { Feather } from "@expo/vector-icons";
+import { useAppDispatch, useAppSelector } from "@/hooks/useAppDispatch";
+import { setUser, setLoading, setError } from "@/stores/slices/authSlice";
+import { registerAPI } from "@/api/auth";
+import { passwordValidator } from "../../helpers/passwordValidator";
+>>>>>>> f96f99b (add auths)
 import { emailValidator } from "../../helpers/emailValidator";
 import { fullnameValidator } from "../../helpers/fullnameValidator";
 import { passwordValidator } from "../../helpers/passwordValidator";
 
 const SignUpScreen = () => {
+<<<<<<< HEAD
 	const router = useRouter();
 	// State variables
 	const [fullName, setFullName] = useState("");
@@ -31,6 +58,19 @@ const SignUpScreen = () => {
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [isChecked, setIsChecked] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+=======
+  const router = useRouter();
+  // State variables
+  const dispatch = useAppDispatch();
+  const { isLoading, error } = useAppSelector((state) => state.auth);
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
+>>>>>>> f96f99b (add auths)
 
 	// Error states
 	const [fullNameError, setFullNameError] = useState("");
@@ -114,6 +154,7 @@ const SignUpScreen = () => {
 			return;
 		}
 
+<<<<<<< HEAD
 		if (!isTermsAccepted) {
 			Alert.alert(
 				"Terms Required",
@@ -149,6 +190,24 @@ const SignUpScreen = () => {
 			setIsLoading(false);
 		}
 	};
+=======
+    if (!isTermsAccepted) {
+      Alert.alert(
+        "Terms Required",
+        "Please accept the Terms and Conditions to continue",
+      );
+      return;
+    }
+    dispatch(setLoading(true));
+
+    try {
+      const respone = await registerAPI({ fullName, email, password });
+      dispatch(setUser(respone));
+    } catch (error) {
+      Alert.alert("Sign Up Failed", "An error occurred. Please try again.");
+    }
+  };
+>>>>>>> f96f99b (add auths)
 
 	const handleLogin = () => {
 		router.push("/(auth)/login");
