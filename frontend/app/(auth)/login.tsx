@@ -64,10 +64,14 @@ const LoginScreen = () => {
     }
     dispatch(setLoading(true));
     try {
-      const response = await loginAPI({ email, password });
-      dispatch(setUser(response));
+      // const response = await loginAPI({ email, password });
+      // dispatch(setUser(response));
+      router.push("/(tabs)/statistics");
     } catch (error) {
       Alert.alert("Login Failed", "Invalid email or password");
+      dispatch(setLoading(false));
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 

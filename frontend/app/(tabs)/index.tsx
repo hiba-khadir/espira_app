@@ -1,10 +1,11 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "@/components/header";
 import { ControlsSection, HeroCard, MetricsSection } from "@/components/index";
 import Illustration from "../../assets/images/illustrations.svg";
+import { getAllDevices } from "@/api/device";
 export default function App() {
   const [lightEnabled, setLightEnabled] = useState(true);
   const [windowEnabled, setWindowEnabled] = useState(true);
@@ -55,7 +56,17 @@ export default function App() {
       badgeText: "#b14a4a",
     },
   ];
-
+  useEffect(() => {
+    const handle = async () => {
+      try {
+        const respone = await getAllDevices();
+        console.log(respone);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    handle();
+  }, []);
   return (
     <SafeAreaView style={styles.screen}>
       <StatusBar style="dark" />
