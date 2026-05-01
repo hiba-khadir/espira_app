@@ -3,8 +3,10 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-
-export default function Header() {
+type user = {
+  fullname?: string;
+};
+export default function Header({ fullname }: user) {
   const options: Intl.DateTimeFormatOptions = {
     weekday: "long",
     year: "numeric",
@@ -16,7 +18,7 @@ export default function Header() {
   return (
     <View style={styles.header} className="p-8">
       <View>
-        <Text style={styles.headerTitle}>Hi Mahmoud</Text>
+        <Text style={styles.headerTitle}>Hi {fullname}</Text>
         <Text style={styles.headerDate}>
           {new Intl.DateTimeFormat("en-US", options).format(date)}
         </Text>
