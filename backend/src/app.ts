@@ -37,5 +37,5 @@ app.get("/api/mqttStatus", (req, res) => {
 // run cleaning old history once on startup then every 24 hours
 runHistoryCleanup();
 setInterval(runHistoryCleanup, 24 * 60 * 60 * 1000);
-connectMqtt();
+// connectMqtt();
 app.listen(3000, () => console.log("Server running on 3000"));

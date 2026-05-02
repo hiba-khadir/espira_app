@@ -22,12 +22,15 @@ export interface SuccessMessage {
   message: string;
 }
 export const updateDeviceState = async (
-  id: string,
+  id: number,
   isOn: boolean,
 ): Promise<SuccessMessage> => {
-  const { data } = await instance.put<SuccessMessage>(`/api/devices/${id}`, {
-    isOn,
-  });
+  const { data } = await instance.put<SuccessMessage>(
+    `/api/devices/${id}/state`,
+    {
+      isOn,
+    },
+  );
   return data;
 };
 export const getDeviceHistory = async (id: string): Promise<DeviceHistory> => {

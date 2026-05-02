@@ -2,7 +2,8 @@ import { colors } from "@/constants/colors";
 import { MaterialIcons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, Switch, Text, View } from "react-native";
-
+import { SuccessMessage } from "@/api/device";
+import { updateDeviceState } from "@/api/device";
 interface ToggleCardProps {
   iconName: keyof typeof MaterialIcons.glyphMap;
   title: string;
@@ -10,7 +11,7 @@ interface ToggleCardProps {
   iconBg: string;
   iconColor: string;
   enabled: boolean;
-  onToggle: (v: boolean) => void;
+  onToggle: (isOn: boolean) => void;
 }
 
 export const ToggleCard: React.FC<ToggleCardProps> = ({

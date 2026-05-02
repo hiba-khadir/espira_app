@@ -5,13 +5,23 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "@/components/header";
 import { ControlsSection, HeroCard, MetricsSection } from "@/components/index";
 import Illustration from "../../assets/images/illustrations.svg";
-import { getAllDevices } from "@/api/device";
-import { setDevices } from "@/stores/slices/deviceSlice";
+import { getAllDevices, updateDeviceState } from "@/api/device";
+import { setDevices, updateActuatorState } from "@/stores/slices/deviceSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/useAppDispatch";
+
 export default function App() {
-  const [lightEnabled, setLightEnabled] = useState(true);
-  const [windowEnabled, setWindowEnabled] = useState(true);
   const dispatch = useAppDispatch();
+  const handleToggle = async (deviceId: number, isOn: boolean) => {
+    dispatch(updateActuatorState({ deviceId, isOn }));
+    try {
+      console.log(deviceId, isOn);
+
+      await updateDeviceState(deviceId, isOn);
+    } catch (error) {
+      dispatch(updateActuatorState({ deviceId, isOn: !isOn }));
+      console.log("Failed to update device state:", error);
+    }
+  };
   const Devices = useAppSelector((s) => s.devices);
   const metrics = [
     {
@@ -81,7 +91,7 @@ export default function App() {
           <Header />
           <HeroCard Illustration={Illustration} />
           <MetricsSection metrics={metrics} />
-          <ControlsSection devices={Devices.devices} />
+          <ControlsSection devices={Devices.devices} onToggle={handleToggle} />
         </ScrollView>
       </View>
     </SafeAreaView>

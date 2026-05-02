@@ -5,10 +5,11 @@ import { ToggleCard } from "./ToggleCard";
 import { Device } from "@/types/device";
 interface ControlsSectionProps {
   devices: Device[];
+  onToggle: (id: number, isOn: boolean) => void;
 }
-
 export const ControlsSection: React.FC<ControlsSectionProps> = ({
   devices,
+  onToggle,
 }) => (
   <View style={styles.sectionWrap}>
     <View style={styles.sectionHeader}>
@@ -16,28 +17,25 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
     </View>
     <View style={styles.cardsRow}>
       {devices.map((device) => {
-        return device.type == "sensor" ? (
+        const isOn = device.actuatorState?.isOn ?? false;
+        const isSensor = device.type === "sensor";
+
+        return (
           <View style={styles.cardColumn} key={device.id}>
             <ToggleCard
-              iconName="lightbulb-outline"
+              iconName={isSensor ? "lightbulb-outline" : "window"}
               title={device.name}
-              subtitle={device?.sensorState?.lastUpdated || "not known"}
-              iconBg={colors.primaryContainer}
-              iconColor={colors.primary}
-              enabled={true}
-              onToggle={() => {}}
-            />
-          </View>
-        ) : (
-          <View style={styles.cardColumn}>
-            <ToggleCard
-              iconName="window"
-              title={device.name}
-              subtitle={device?.actuatorState?.lastUpdated || "not known"}
-              iconBg={colors.primaryContainer}
-              iconColor={colors.primary}
-              enabled={true}
-              onToggle={() => {}}
+              subtitle={
+                device.actuatorState?.lastUpdated ??
+                device.sensorState?.lastUpdated ??
+                "not known"
+              }
+              iconBg={
+                isSensor ? colors.primaryContainer : colors.secondaryContainer
+              }
+              iconColor={isSensor ? colors.primary : colors.secondary}
+              enabled={isOn}
+              onToggle={(value) => onToggle(device.id, value)}
             />
           </View>
         );

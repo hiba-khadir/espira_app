@@ -21,7 +21,6 @@ const deviceSlice = createSlice({
       action: PayloadAction<{
         deviceId: number;
         isOn: boolean;
-        intensity?: number;
       }>,
     ) {
       const device = state.devices.find(
@@ -29,22 +28,7 @@ const deviceSlice = createSlice({
       );
       if (device?.actuatorState) {
         device.actuatorState.isOn = action.payload.isOn;
-        if (action.payload.intensity !== undefined) {
-          device.actuatorState.intensity = action.payload.intensity;
-        }
         device.actuatorState.lastUpdated = new Date().toISOString();
-      }
-    },
-    updateSensorState(
-      state,
-      action: PayloadAction<{ deviceId: number; value: number }>,
-    ) {
-      const device = state.devices.find(
-        (d) => d.id === action.payload.deviceId,
-      );
-      if (device?.sensorState) {
-        device.sensorState.value = action.payload.value;
-        device.sensorState.lastUpdated = new Date().toISOString();
       }
     },
     updateConnectionStatus(
@@ -64,10 +48,6 @@ const deviceSlice = createSlice({
   },
 });
 
-export const {
-  setDevices,
-  updateActuatorState,
-  updateSensorState,
-  updateConnectionStatus,
-} = deviceSlice.actions;
+export const { setDevices, updateActuatorState, updateConnectionStatus } =
+  deviceSlice.actions;
 export default deviceSlice.reducer;
