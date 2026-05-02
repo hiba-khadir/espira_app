@@ -3,10 +3,12 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { ToggleCard } from "./ToggleCard";
 import { Device } from "@/types/device";
+import { msToReadable } from "@/utils/metrics";
 interface ControlsSectionProps {
   devices: Device[];
   onToggle: (id: number, isOn: boolean) => void;
 }
+const now = new Date();
 export const ControlsSection: React.FC<ControlsSectionProps> = ({
   devices,
   onToggle,
@@ -17,19 +19,23 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
     </View>
     <View style={styles.cardsRow}>
       {devices.map((device) => {
-        const isOn = device.actuatorState?.isOn ?? false;
         const isActuator = device.type == "actuator";
+        const lastUpdated =
+          isActuator && device.actuatorState?.lastUpdated
+            ? msToReadable(
+                now.getTime() -
+                  new Date(device.actuatorState?.lastUpdated).getTime(),
+              )
+            : "not updated yet";
+        const isOn = device.actuatorState?.isOn ?? false;
+
         const islight = device.name == "light";
         return isActuator == true ? (
           <View style={styles.cardColumn} key={device.id}>
             <ToggleCard
               iconName={islight ? "lightbulb-outline" : "window"}
               title={device.name}
-              subtitle={
-                device.actuatorState?.lastUpdated ??
-                device.sensorState?.lastUpdated ??
-                "not known"
-              }
+              subtitle={`${lastUpdated}` || "not known"}
               iconBg={
                 islight ? colors.primaryContainer : colors.secondaryContainer
               }

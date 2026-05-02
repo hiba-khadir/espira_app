@@ -41,3 +41,14 @@ export const devicesToMetrics = (devices: Device[]) => {
       };
     });
 };
+// time
+export const msToReadable = (ms: number): string => {
+  const minutes = Math.floor(ms / 60000);
+  const hours = Math.floor(ms / 3600000);
+  const days = Math.floor(ms / 86400000);
+
+  if (days > 0) return ` updated ${days}d ago`;
+  if (hours > 0) return ` updated  ${hours}h ago`;
+  if (minutes > 0) return ` updated  ${minutes}min ago`;
+  return "just now";
+};
