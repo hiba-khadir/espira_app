@@ -6,10 +6,13 @@ import Header from "@/components/header";
 import { ControlsSection, HeroCard, MetricsSection } from "@/components/index";
 import Illustration from "../../assets/images/illustrations.svg";
 import { getAllDevices } from "@/api/device";
+import { setDevices } from "@/stores/slices/deviceSlice";
+import { useAppDispatch, useAppSelector } from "@/hooks/useAppDispatch";
 export default function App() {
   const [lightEnabled, setLightEnabled] = useState(true);
   const [windowEnabled, setWindowEnabled] = useState(true);
-
+  const dispatch = useAppDispatch();
+  const Devices = useAppSelector((s) => s.devices);
   const metrics = [
     {
       label: "Temperature",
@@ -59,8 +62,8 @@ export default function App() {
   useEffect(() => {
     const handle = async () => {
       try {
-        const respone = await getAllDevices();
-        console.log(respone);
+        const data = await getAllDevices();
+        dispatch(setDevices(data));
       } catch (error) {
         console.log(error);
       }
@@ -78,12 +81,7 @@ export default function App() {
           <Header />
           <HeroCard Illustration={Illustration} />
           <MetricsSection metrics={metrics} />
-          <ControlsSection
-            lightOn={lightEnabled}
-            windowOn={windowEnabled}
-            onLightToggle={setLightEnabled}
-            onWindowToggle={setWindowEnabled}
-          />
+          <ControlsSection devices={Devices.devices} />
         </ScrollView>
       </View>
     </SafeAreaView>

@@ -2,47 +2,46 @@ import { colors } from "@/constants/colors";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { ToggleCard } from "./ToggleCard";
-
+import { Device } from "@/types/device";
 interface ControlsSectionProps {
-  lightOn: boolean;
-  windowOn: boolean;
-  onLightToggle: (value: boolean) => void;
-  onWindowToggle: (value: boolean) => void;
+  devices: Device[];
 }
 
 export const ControlsSection: React.FC<ControlsSectionProps> = ({
-  lightOn,
-  windowOn,
-  onLightToggle,
-  onWindowToggle,
+  devices,
 }) => (
   <View style={styles.sectionWrap}>
     <View style={styles.sectionHeader}>
       <Text style={styles.sectionTitle}>Cards</Text>
     </View>
     <View style={styles.cardsRow}>
-      <View style={styles.cardColumn}>
-        <ToggleCard
-          iconName="lightbulb-outline"
-          title="Light"
-          subtitle="UPDATED 3MIN AGO"
-          iconBg={colors.primaryContainer}
-          iconColor={colors.primary}
-          enabled={lightOn}
-          onToggle={onLightToggle}
-        />
-      </View>
-      <View style={styles.cardColumn}>
-        <ToggleCard
-          iconName="window"
-          title="Window"
-          subtitle="UPDATED 2 DAYS AGO"
-          iconBg={colors.secondaryContainer}
-          iconColor={colors.secondary}
-          enabled={windowOn}
-          onToggle={onWindowToggle}
-        />
-      </View>
+      {devices.map((device) => {
+        return device.type == "sensor" ? (
+          <View style={styles.cardColumn} key={device.id}>
+            <ToggleCard
+              iconName="lightbulb-outline"
+              title={device.name}
+              subtitle={device?.sensorState?.lastUpdated || "not known"}
+              iconBg={colors.primaryContainer}
+              iconColor={colors.primary}
+              enabled={true}
+              onToggle={() => {}}
+            />
+          </View>
+        ) : (
+          <View style={styles.cardColumn}>
+            <ToggleCard
+              iconName="window"
+              title={device.name}
+              subtitle={device?.actuatorState?.lastUpdated || "not known"}
+              iconBg={colors.primaryContainer}
+              iconColor={colors.primary}
+              enabled={true}
+              onToggle={() => {}}
+            />
+          </View>
+        );
+      })}
     </View>
   </View>
 );
@@ -62,6 +61,8 @@ const styles = StyleSheet.create({
   },
   cardsRow: {
     flexDirection: "row",
+    gap: 6,
+    flexWrap: "wrap",
     justifyContent: "space-between",
   },
   cardColumn: {
