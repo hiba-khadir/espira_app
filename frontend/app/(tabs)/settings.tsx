@@ -1,6 +1,6 @@
 import Header from "@/components/PageHeader";
+import { useAppSelector } from "@/hooks/useAppDispatch";
 import { Feather, Ionicons } from "@expo/vector-icons";
-import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
@@ -14,9 +14,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SettingsScreen() {
   const router = useRouter();
-
+  const User = useAppSelector((s) => s.auth.user);
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#FAFAFA' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#FAFAFA" }}>
       <ScrollView contentContainerStyle={{ paddingBottom: 100 }} className="">
         {/* Header */}
         <Header title="settings"></Header>

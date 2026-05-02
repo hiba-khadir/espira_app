@@ -6,7 +6,8 @@ import { DeviceHistory } from "@/types/device";
 export interface createPayload {
   name: string;
   type: DeviceType;
-  stateTopic: string;
+  stateTopic: string | null;
+  controlTopic: string | null;
 }
 export const getAllDevices = async (): Promise<Device[]> => {
   const { data } = await instance.get<Device[]>("/api/devices");
@@ -38,4 +39,14 @@ export const getDeviceHistory = async (id: string): Promise<DeviceHistory> => {
     `/api/devices/${id}/history`,
   );
   return data;
+};
+// add devices after logging in automatically (user can't )
+export const AddDevices = async (
+  devices: createPayload[],
+): Promise<PromiseSettledResult<Device>[]> => {
+  const devicePromises = devices.map(
+    async (device) => await CreateDevices(device),
+  );
+
+  return Promise.allSettled(devicePromises);
 };

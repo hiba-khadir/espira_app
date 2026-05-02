@@ -15,7 +15,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CheckBox } from "react-native-elements";
-
+import { AddDevices } from "@/api/device";
+import { Predevices } from "@/utils/devices";
 import { Feather } from "@expo/vector-icons";
 import { useAppDispatch, useAppSelector } from "@/hooks/useAppDispatch";
 import { setUser, setLoading, setError } from "@/stores/slices/authSlice";
@@ -29,6 +30,7 @@ const SignUpScreen = () => {
   // State variables
   const dispatch = useAppDispatch();
   const { isLoading, error } = useAppSelector((state) => state.auth);
+  const user = useAppSelector((state) => state.auth.user);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -129,9 +131,17 @@ const SignUpScreen = () => {
     dispatch(setLoading(true));
 
     try {
-      const respone = await registerAPI({ fullName, email, password });
-      dispatch(setUser(respone));
+      const name = fullName;
+      const response = await registerAPI({
+        name,
+        email,
+        password,
+        phoneNumber: "0594617233", // need to be removed from backend
+      });
+      dispatch(setUser(response));
+      router.push("/(tabs)/statistics");
     } catch (error) {
+      console.log(error);
       Alert.alert("Sign Up Failed", "An error occurred. Please try again.");
       dispatch(setLoading(false));
     } finally {

@@ -8,8 +8,8 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use((config) => {
-  // const token = store.getState().auth.user?.token;
-  const token = process.env.EXPO_PUBLIC_TOKEN;
+  const token = store.getState().auth?.token;
+  // const token = process.env.EXPO_PUBLIC_TOKEN;
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
