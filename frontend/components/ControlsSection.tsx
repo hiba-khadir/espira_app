@@ -18,12 +18,12 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
     <View style={styles.cardsRow}>
       {devices.map((device) => {
         const isOn = device.actuatorState?.isOn ?? false;
-        const isSensor = device.type === "sensor";
-
-        return (
+        const isActuator = device.type == "actuator";
+        const islight = device.name == "light";
+        return isActuator == true ? (
           <View style={styles.cardColumn} key={device.id}>
             <ToggleCard
-              iconName={isSensor ? "lightbulb-outline" : "window"}
+              iconName={islight ? "lightbulb-outline" : "window"}
               title={device.name}
               subtitle={
                 device.actuatorState?.lastUpdated ??
@@ -31,13 +31,15 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
                 "not known"
               }
               iconBg={
-                isSensor ? colors.primaryContainer : colors.secondaryContainer
+                islight ? colors.primaryContainer : colors.secondaryContainer
               }
-              iconColor={isSensor ? colors.primary : colors.secondary}
+              iconColor={islight ? colors.primary : colors.secondary}
               enabled={isOn}
               onToggle={(value) => onToggle(device.id, value)}
             />
           </View>
+        ) : (
+          ""
         );
       })}
     </View>

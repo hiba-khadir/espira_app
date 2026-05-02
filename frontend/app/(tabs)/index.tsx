@@ -8,7 +8,7 @@ import Illustration from "../../assets/images/illustrations.svg";
 import { getAllDevices, updateDeviceState } from "@/api/device";
 import { setDevices, updateActuatorState } from "@/stores/slices/deviceSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/useAppDispatch";
-
+import { devicesToMetrics } from "@/utils/metrics";
 export default function App() {
   const dispatch = useAppDispatch();
   const handleToggle = async (deviceId: number, isOn: boolean) => {
@@ -23,52 +23,8 @@ export default function App() {
     }
   };
   const Devices = useAppSelector((s) => s.devices);
-  const metrics = [
-    {
-      label: "Temperature",
-      value: "80",
-      unit: "°C",
-      progress: 78,
-      color: "#1f7a52",
-      badgeLabel: "OPTIMAL SPECTRUM",
-      statusBg: "#d6eec4",
-      badgeDot: "#1f7a52",
-      badgeText: "#1f7a52",
-    },
-    {
-      label: "Humidity",
-      value: "12",
-      unit: "%",
-      progress: 14,
-      color: "#d65a5a",
-      badgeLabel: "DANGER ZONE",
-      statusBg: "#f9dbdb",
-      badgeDot: "#d65a5a",
-      badgeText: "#b14a4a",
-    },
-    {
-      label: "Lighting",
-      value: "12",
-      unit: "%",
-      progress: 14,
-      color: "#d65a5a",
-      badgeLabel: "DANGER ZONE",
-      statusBg: "#f9dbdb",
-      badgeDot: "#d65a5a",
-      badgeText: "#b14a4a",
-    },
-    {
-      label: "Humidity",
-      value: "12",
-      unit: "%",
-      progress: 14,
-      color: "#d65a5a",
-      badgeLabel: "DANGER ZONE",
-      statusBg: "#f9dbdb",
-      badgeDot: "#d65a5a",
-      badgeText: "#b14a4a",
-    },
-  ];
+  const metrics = devicesToMetrics(Devices.devices);
+
   useEffect(() => {
     const handle = async () => {
       try {
@@ -79,7 +35,7 @@ export default function App() {
       }
     };
     handle();
-  }, []);
+  }, [Devices.devices.length]);
   return (
     <SafeAreaView style={styles.screen}>
       <StatusBar style="dark" />
