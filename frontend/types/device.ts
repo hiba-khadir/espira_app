@@ -7,7 +7,14 @@ export interface ActuatorState {
   intensity: number | null;
   lastUpdated: string;
 }
-
+export interface DeviceHistory {
+  id: number;
+  deviceId: number;
+  device: Device;
+  oldValue: string;
+  newValue: string;
+  recordedAt: Date;
+}
 export interface SensorState {
   deviceId: number;
   value: number;
