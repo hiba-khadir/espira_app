@@ -1,6 +1,6 @@
 import { Image } from "expo-image";
 import { Feather } from "@expo/vector-icons";
-
+import { useAppSelector } from "@/hooks/useAppDispatch";
 import { useRouter } from "expo-router";
 import React, { useRef, useState } from "react";
 import {
@@ -49,11 +49,12 @@ const InputField = ({
 
 export default function EditProfileScreen() {
   const router = useRouter();
+  const User = useAppSelector((s) => s.auth.user);
 
-  const [name, setName] = useState("Mahmoud Darouiche");
+  const [name, setName] = useState(User?.name);
   const [address, setAddress] = useState("Esi Alger,Oued Smar, Alger Algérie");
-  const [email, setEmail] = useState("ol_boucenna@gmail.com");
-  const [phone, setPhone] = useState("0555667788");
+  const [email, setEmail] = useState(User?.email);
+  const [phone, setPhone] = useState(User?.phoneNumber);
   const [password, setPassword] = useState("••••••••••••••••");
 
   return (

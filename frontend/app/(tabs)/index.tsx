@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "@/components/header";
 import { ControlsSection, HeroCard, MetricsSection } from "@/components/index";
@@ -8,6 +8,8 @@ import Illustration from "../../assets/images/illustrations.svg";
 import { getAllDevices, updateDeviceState } from "@/api/device";
 import { setDevices, updateActuatorState } from "@/stores/slices/deviceSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/useAppDispatch";
+import { AddDevices } from "@/api/device";
+import { Predevices } from "@/utils/devices";
 import { devicesToMetrics } from "@/utils/metrics";
 export default function App() {
   const dispatch = useAppDispatch();
@@ -19,23 +21,37 @@ export default function App() {
       await updateDeviceState(deviceId, isOn);
     } catch (error) {
       dispatch(updateActuatorState({ deviceId, isOn: !isOn }));
-      console.log("Failed to update device state:", error);
+      Alert.alert("Failed to update device state try again later ");
     }
   };
   const Devices = useAppSelector((s) => s.devices);
+  const User = useAppSelector((s) => s.auth.user);
   const metrics = devicesToMetrics(Devices.devices);
-
   useEffect(() => {
     const handle = async () => {
       try {
         const data = await getAllDevices();
-        dispatch(setDevices(data));
+
+        if (data.length === 0) {
+          const results = await AddDevices(Predevices);
+          const failed = results.filter((r) => r.status === "rejected");
+          if (failed.length > 0) {
+            console.warn("Some devices failed to create:", failed);
+          }
+
+          const seeded = await getAllDevices();
+          dispatch(setDevices(seeded));
+        } else {
+          dispatch(setDevices(data));
+        }
       } catch (error) {
         console.log(error);
       }
     };
+
     handle();
-  }, [Devices.devices.length]);
+  }, []);
+
   return (
     <SafeAreaView style={styles.screen}>
       <StatusBar style="dark" />
@@ -44,7 +60,7 @@ export default function App() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
-          <Header />
+          <Header Username={User?.name || "m"} />
           <HeroCard Illustration={Illustration} />
           <MetricsSection metrics={metrics} />
           <ControlsSection devices={Devices.devices} onToggle={handleToggle} />

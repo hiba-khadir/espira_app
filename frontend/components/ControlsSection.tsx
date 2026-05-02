@@ -18,36 +18,42 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
       <Text style={styles.sectionTitle}>Cards</Text>
     </View>
     <View style={styles.cardsRow}>
-      {devices.map((device) => {
-        const isActuator = device.type == "actuator";
-        const lastUpdated =
-          isActuator && device.actuatorState?.lastUpdated
-            ? msToReadable(
-                now.getTime() -
-                  new Date(device.actuatorState?.lastUpdated).getTime(),
-              )
-            : "not updated yet";
-        const isOn = device.actuatorState?.isOn ?? false;
+      {devices.length == 0 ? (
+        <Text className="text-center w-full  text-lime-600 capitalize">
+          no devices added yet
+        </Text>
+      ) : (
+        devices.map((device) => {
+          const isActuator = device.type == "actuator";
+          const lastUpdated =
+            isActuator && device.actuatorState?.lastUpdated
+              ? msToReadable(
+                  now.getTime() -
+                    new Date(device.actuatorState?.lastUpdated).getTime(),
+                )
+              : "not updated yet";
+          const isOn = device.actuatorState?.isOn ?? false;
 
-        const islight = device.name == "light";
-        return isActuator == true ? (
-          <View style={styles.cardColumn} key={device.id}>
-            <ToggleCard
-              iconName={islight ? "lightbulb-outline" : "window"}
-              title={device.name}
-              subtitle={`${lastUpdated}` || "not known"}
-              iconBg={
-                islight ? colors.primaryContainer : colors.secondaryContainer
-              }
-              iconColor={islight ? colors.primary : colors.secondary}
-              enabled={isOn}
-              onToggle={(value) => onToggle(device.id, value)}
-            />
-          </View>
-        ) : (
-          ""
-        );
-      })}
+          const islight = device.name == "light";
+          return isActuator == true ? (
+            <View style={styles.cardColumn} key={device.id}>
+              <ToggleCard
+                iconName={islight ? "lightbulb-outline" : "window"}
+                title={device.name}
+                subtitle={`${lastUpdated}` || "not known"}
+                iconBg={
+                  islight ? colors.primaryContainer : colors.secondaryContainer
+                }
+                iconColor={islight ? colors.primary : colors.secondary}
+                enabled={isOn}
+                onToggle={(value) => onToggle(device.id, value)}
+              />
+            </View>
+          ) : (
+            ""
+          );
+        })
+      )}
     </View>
   </View>
 );
