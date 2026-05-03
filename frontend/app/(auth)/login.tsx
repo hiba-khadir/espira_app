@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Image } from "expo-image";
 import { useAppDispatch, useAppSelector } from "../../hooks/useAppDispatch";
-import { setUser, setError, setLoading } from "@/stores/slices/authSlice";
+import { setToken, setError, setLoading } from "@/stores/slices/authSlice";
 import { useRouter } from "expo-router";
 import {
   View,
@@ -20,7 +20,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { emailValidator } from "../../helpers/emailValidator";
 import { passwordValidator } from "../../helpers/passwordValidator";
 import { Feather } from "@expo/vector-icons";
-import { loginAPI, registerAPI } from "@/api/auth";
+import { loginAPI, requestOtpAPI } from "@/api/auth";
+import axios from "axios";
 
 const LoginScreen = () => {
   const dispatch = useAppDispatch();
@@ -64,12 +65,33 @@ const LoginScreen = () => {
     }
     dispatch(setLoading(true));
     try {
-      // const response = await loginAPI({ email, password });
-      // dispatch(setUser(response));
-      router.push("/(tabs)/statistics");
+      const response = await loginAPI({ email, password });
+      dispatch(setToken(response.token));
+      router.replace("/(tabs)/statistics");
     } catch (error) {
-      Alert.alert("Login Failed", "Invalid email or password");
-      dispatch(setLoading(false));
+      if (axios.isAxiosError(error) && error.response?.status === 403) {
+        // Account not verified — send a fresh OTP and redirect to verification
+        try {
+          await requestOtpAPI({ email });
+        } catch (_) {
+          // OTP request may fail silently; user can resend from OTP screen
+        }
+        Alert.alert(
+          "Account Not Verified",
+          "Your account is not verified yet. We've sent a new OTP to your email.",
+          [
+            {
+              text: "Verify Now",
+              onPress: () =>
+                router.push({ pathname: "/(auth)/otp", params: { email } }),
+            },
+          ],
+        );
+      } else if (axios.isAxiosError(error) && error.response?.status === 401) {
+        Alert.alert("Login Failed", "Invalid email or password");
+      } else {
+        Alert.alert("Login Failed", "An unexpected error occurred. Please try again.");
+      }
     } finally {
       dispatch(setLoading(false));
     }

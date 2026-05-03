@@ -19,8 +19,8 @@ import { AddDevices } from "@/api/device";
 import { Predevices } from "@/utils/devices";
 import { Feather } from "@expo/vector-icons";
 import { useAppDispatch, useAppSelector } from "@/hooks/useAppDispatch";
-import { setUser, setLoading, setError } from "@/stores/slices/authSlice";
-import { registerAPI } from "@/api/auth";
+import { setLoading, setError } from "@/stores/slices/authSlice";
+import { registerAPI, requestOtpAPI } from "@/api/auth";
 import { passwordValidator } from "../../helpers/passwordValidator";
 import { emailValidator } from "../../helpers/emailValidator";
 import { fullnameValidator } from "../../helpers/fullnameValidator";
@@ -132,18 +132,25 @@ const SignUpScreen = () => {
 
     try {
       const name = fullName;
-      const response = await registerAPI({
+      await registerAPI({
         name,
         email,
         password,
         phoneNumber: "0594617233", // need to be removed from backend
       });
-      dispatch(setUser(response));
-      router.push("/(tabs)/statistics");
-    } catch (error) {
-      console.log(error);
-      Alert.alert("Sign Up Failed", "An error occurred. Please try again.");
-      dispatch(setLoading(false));
+      // Request OTP to be sent to the user's email
+      await requestOtpAPI({ email });
+      // Navigate to OTP verification screen
+      router.push({ pathname: "/(auth)/otp", params: { email } });
+    } catch (error: any) {
+      const status = error?.response?.status;
+      const serverMsg = error?.response?.data?.error;
+      if (status === 409) {
+        Alert.alert("Sign Up Failed", serverMsg || "Email or phone already in use.");
+      } else {
+        console.log(error);
+        Alert.alert("Sign Up Failed", "An error occurred. Please try again.");
+      }
     } finally {
       dispatch(setLoading(false));
     }
