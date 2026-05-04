@@ -20,8 +20,9 @@ export default function App() {
 
       await updateDeviceState(deviceId, isOn);
     } catch (error) {
+      console.log(error);
       dispatch(updateActuatorState({ deviceId, isOn: !isOn }));
-      Alert.alert("Failed to update device state try again later ");
+      Alert.alert("Failed to update device state  try again later ");
     }
   };
   const Devices = useAppSelector((s) => s.devices);
@@ -31,7 +32,7 @@ export default function App() {
     const handle = async () => {
       try {
         const data = await getAllDevices();
-
+        console.log(data);
         if (data.length === 0) {
           const results = await AddDevices(Predevices);
           const failed = results.filter((r) => r.status === "rejected");
@@ -60,7 +61,7 @@ export default function App() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
-          <Header Username={User?.name || "m"} />
+          <Header Username={User?.name || "maia"} />
           <HeroCard Illustration={Illustration} />
           <MetricsSection metrics={metrics} />
           <ControlsSection devices={Devices.devices} onToggle={handleToggle} />

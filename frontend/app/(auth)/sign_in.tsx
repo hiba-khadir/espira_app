@@ -115,7 +115,7 @@ const SignUpScreen = () => {
       !isConfirmPasswordValid
     ) {
       Alert.alert(
-        "Validation Error",
+        "Validation Error m",
         "Please fix all errors before continuing",
       );
       return;
@@ -136,7 +136,7 @@ const SignUpScreen = () => {
         name,
         email,
         password,
-        phoneNumber: "0594617233", // need to be removed from backend
+        phoneNumber: "0541945730", // need to be removed from backend
       });
       dispatch(setUser(response));
       router.push("/(tabs)/statistics");
