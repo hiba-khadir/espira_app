@@ -141,13 +141,14 @@ export function Container({
 const SIZE = 280;
 export function Chart() {
   const Devices = useAppSelector((s) => s.devices);
-  const lighting = Devices.devices.find((d) => d.name == "Lighting");
+  const lighting = Devices.devices.find((d) => d.name == "lighting");
   const lightingValue = lighting?.sensorState?.value || 0;
   const soilMoisture = Devices.devices.find((d) => d.name == "soilMoisture");
   const MoistureValue = soilMoisture?.sensorState?.value || 0;
   const [sensor, setsensor] = useState(lighting);
+  console.log(soilMoisture);
   const handleChange = () => {
-    if (sensor?.name == "Lighting") {
+    if (sensor?.name == "lighting") {
       setsensor(soilMoisture);
     } else setsensor(lighting);
   };

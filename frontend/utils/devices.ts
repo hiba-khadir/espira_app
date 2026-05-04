@@ -4,20 +4,20 @@ export const Predevices: createPayload[] = [
   {
     name: "window",
     type: "actuator",
-    stateTopic: null,
+    stateTopic: "device/1/state",
     controlTopic: "device/1/state",
   },
   {
     name: "light",
     type: "actuator",
-    stateTopic: null,
+    stateTopic: "device/1/state",
     controlTopic: "device/2/state",
   },
   {
     name: "lighting",
     type: "sensor",
     stateTopic: "device/3/state",
-    controlTopic: "device/1/state",
+    controlTopic: null,
   },
   {
     name: "humidity",
