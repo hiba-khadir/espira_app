@@ -57,7 +57,7 @@ enum ConnectionStatus {
 
 model ActuatorState {
   deviceId     Int      @id @map("device_id")
-  device       Device   @relation(fields: [deviceId], references: [id])
+  device       Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
   isOn         Boolean  @default(false) @map("is_on")
   intensity    Int?     @default(0)
   lastUpdated  DateTime @map("last_updated")
@@ -65,7 +65,7 @@ model ActuatorState {
 
 model SensorState {
   deviceId    Int      @id @map("device_id")
-  device      Device   @relation(fields: [deviceId], references: [id])
+  device      Device   @relation(fields: [deviceId], references: [id] , onDelete: Cascade)
   value       Float
   lastUpdated DateTime @map("last_updated")
 }
@@ -73,7 +73,7 @@ model SensorState {
 model DeviceHistory {
   id         Int       @id @default(autoincrement())
   deviceId   Int       @map("device_id")
-  device     Device    @relation(fields: [deviceId], references: [id])
+  device     Device    @relation(fields: [deviceId], references: [id] , onDelete: Cascade)
   actionType ActionType @map("action_type")
   oldValue   String?   @map("old_value")
   newValue   String?   @map("new_value")
