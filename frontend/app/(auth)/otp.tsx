@@ -1,7 +1,8 @@
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useRef, useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
+	Alert,
 	KeyboardAvoidingView,
 	Platform,
 	ScrollView,
@@ -11,12 +12,13 @@ import {
 	TextInput,
 	TouchableOpacity,
 	View,
-	Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { requestOtpAPI, verifyOtpAPI } from "@/api/auth";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { setToken } from "@/stores/slices/authSlice";
+
+const otpSlotIds = ["otp-1", "otp-2", "otp-3", "otp-4", "otp-5", "otp-6"];
 
 const OTPScreen = () => {
 	const router = useRouter();
@@ -49,7 +51,10 @@ const OTPScreen = () => {
 		}
 	};
 
-	const handleKeyPress = (e: any, index: number) => {
+	const handleKeyPress = (
+		e: { nativeEvent: { key: string } },
+		index: number,
+	) => {
 		// Handle backspace to go to previous input
 		if (e.nativeEvent.key === "Backspace" && otp[index] === "" && index > 0) {
 			inputRefs.current[index - 1]?.focus();
@@ -81,9 +86,12 @@ const OTPScreen = () => {
 					onPress: () => router.replace("/(tabs)/statistics"),
 				},
 			]);
-		} catch (error: any) {
-			const status = error?.response?.status;
-			const serverMsg = error?.response?.data?.error;
+		} catch (error: unknown) {
+			const axiosError = error as {
+				response?: { status?: number; data?: { error?: string } };
+			};
+			const status = axiosError.response?.status;
+			const serverMsg = axiosError.response?.data?.error;
 			if (status === 400 && serverMsg?.includes("Invalid OTP")) {
 				Alert.alert(
 					"Invalid Code",
@@ -130,10 +138,11 @@ const OTPScreen = () => {
 				"OTP Sent",
 				"A new verification code has been sent to your email.",
 			);
-		} catch (error: any) {
-			const status = error?.response?.status;
-			const serverMsg = error?.response?.data?.error;
-			console.log("[otp resend error]", { status, serverMsg, error });
+		} catch (error: unknown) {
+			const axiosError = error as {
+				response?: { status?: number; data?: { error?: string } };
+			};
+			const serverMsg = axiosError.response?.data?.error;
 			Alert.alert(
 				"Failed to Resend",
 				serverMsg || "Could not send OTP. Please try again.",
@@ -174,7 +183,7 @@ const OTPScreen = () => {
 						<View style={styles.otpContainer}>
 							{otp.map((digit, index) => (
 								<TextInput
-									key={index}
+									key={otpSlotIds[index]}
 									ref={(ref) => (inputRefs.current[index] = ref)}
 									style={[
 										styles.otpInput,

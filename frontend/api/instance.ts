@@ -7,10 +7,6 @@ const instance = axios.create({
 	headers: { "Content-Type": "application/json" },
 });
 
-if (__DEV__) {
-	console.log("[api] baseURL", instance.defaults.baseURL);
-}
-
 instance.interceptors.request.use((config) => {
 	const token = store.getState().auth?.token;
 	// const token = process.env.EXPO_PUBLIC_TOKEN;
