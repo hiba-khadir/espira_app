@@ -1,7 +1,8 @@
 import { Image } from "expo-image";
-import { useRouter } from "expo-router";
-import React, { useRef, useState } from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useRef, useState } from "react";
 import {
+	Alert,
 	KeyboardAvoidingView,
 	Platform,
 	ScrollView,
@@ -13,12 +14,27 @@ import {
 	View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { requestOtpAPI, verifyOtpAPI } from "@/api/auth";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
+import { setToken } from "@/stores/slices/authSlice";
+
+const otpSlotIds = ["otp-1", "otp-2", "otp-3", "otp-4", "otp-5", "otp-6"];
 
 const OTPScreen = () => {
 	const router = useRouter();
+	const dispatch = useAppDispatch();
+	const { email } = useLocalSearchParams<{ email: string }>();
 	const [otp, setOtp] = useState(["", "", "", "", "", ""]);
 	const inputRefs = useRef<(TextInput | null)[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
+	const [resendCooldown, setResendCooldown] = useState(0);
+
+	// Countdown timer for resend cooldown
+	useEffect(() => {
+		if (resendCooldown <= 0) return;
+		const timer = setTimeout(() => setResendCooldown(resendCooldown - 1), 1000);
+		return () => clearTimeout(timer);
+	}, [resendCooldown]);
 
 	const handleOtpChange = (value: string, index: number) => {
 		// Only accept numbers
@@ -35,7 +51,10 @@ const OTPScreen = () => {
 		}
 	};
 
-	const handleKeyPress = (e: any, index: number) => {
+	const handleKeyPress = (
+		e: { nativeEvent: { key: string } },
+		index: number,
+	) => {
 		// Handle backspace to go to previous input
 		if (e.nativeEvent.key === "Backspace" && otp[index] === "" && index > 0) {
 			inputRefs.current[index - 1]?.focus();
@@ -45,25 +64,90 @@ const OTPScreen = () => {
 	const handleContinue = async () => {
 		const otpCode = otp.join("");
 		if (otpCode.length !== 6) {
-			// Could show an error alert here
+			Alert.alert("Invalid OTP", "Please enter the full 6-digit code.");
+			return;
+		}
+
+		if (!email) {
+			Alert.alert(
+				"Error",
+				"Email information is missing. Please go back and try again.",
+			);
 			return;
 		}
 
 		setIsLoading(true);
 		try {
-			// Simulate API verification call
-			await new Promise((resolve) => setTimeout(resolve, 1500));
-			// Navigate to home or next screen after successful OTP
-			router.replace("/(tabs)");
-		} catch (error) {
-			console.error(error);
+			const response = await verifyOtpAPI({ email, otpCode });
+			dispatch(setToken(response.token));
+			Alert.alert("Success", "Your account has been verified!", [
+				{
+					text: "Continue",
+					onPress: () => router.replace("/(tabs)/statistics"),
+				},
+			]);
+		} catch (error: unknown) {
+			const axiosError = error as {
+				response?: { status?: number; data?: { error?: string } };
+			};
+			const status = axiosError.response?.status;
+			const serverMsg = axiosError.response?.data?.error;
+			if (status === 400 && serverMsg?.includes("Invalid OTP")) {
+				Alert.alert(
+					"Invalid Code",
+					"The OTP code you entered is incorrect. Please try again.",
+				);
+			} else if (status === 400 && serverMsg?.includes("No OTP")) {
+				Alert.alert(
+					"OTP Expired",
+					"No OTP was found. Please request a new one.",
+					[
+						{
+							text: "Resend OTP",
+							onPress: handleResend,
+						},
+					],
+				);
+			} else if (status === 404) {
+				Alert.alert("Error", "No account found with that email.");
+			} else {
+				Alert.alert(
+					"Verification Failed",
+					"An error occurred. Please try again.",
+				);
+			}
 		} finally {
 			setIsLoading(false);
 		}
 	};
 
-	const handleResend = () => {
-		console.log("Resend OTP");
+	const handleResend = async () => {
+		if (!email) {
+			Alert.alert("Error", "Email information is missing.");
+			return;
+		}
+		if (resendCooldown > 0) return;
+
+		try {
+			await requestOtpAPI({ email });
+			setResendCooldown(60); // 60-second cooldown
+			// Clear the current OTP inputs
+			setOtp(["", "", "", "", "", ""]);
+			inputRefs.current[0]?.focus();
+			Alert.alert(
+				"OTP Sent",
+				"A new verification code has been sent to your email.",
+			);
+		} catch (error: unknown) {
+			const axiosError = error as {
+				response?: { status?: number; data?: { error?: string } };
+			};
+			const serverMsg = axiosError.response?.data?.error;
+			Alert.alert(
+				"Failed to Resend",
+				serverMsg || "Could not send OTP. Please try again.",
+			);
+		}
 	};
 
 	return (
@@ -90,13 +174,16 @@ const OTPScreen = () => {
 					{/* Main Content Area */}
 					<View style={styles.contentContainer}>
 						<Text style={styles.title}>OTP Validation</Text>
-						<Text style={styles.subtitle}>We have sent OTP on your email</Text>
+						<Text style={styles.subtitle}>
+							We have sent an OTP to{"\n"}
+							<Text style={styles.emailHighlight}>{email || "your email"}</Text>
+						</Text>
 
 						{/* OTP Input Row */}
 						<View style={styles.otpContainer}>
 							{otp.map((digit, index) => (
 								<TextInput
-									key={index}
+									key={otpSlotIds[index]}
 									ref={(ref) => (inputRefs.current[index] = ref)}
 									style={[
 										styles.otpInput,
@@ -131,8 +218,20 @@ const OTPScreen = () => {
 							<Text style={styles.resendText}>
 								Didn&apos;t receive an OTP?{" "}
 							</Text>
-							<TouchableOpacity onPress={handleResend} disabled={isLoading}>
-								<Text style={styles.resendLink}>Resend OTP</Text>
+							<TouchableOpacity
+								onPress={handleResend}
+								disabled={isLoading || resendCooldown > 0}
+							>
+								<Text
+									style={[
+										styles.resendLink,
+										resendCooldown > 0 && styles.resendLinkDisabled,
+									]}
+								>
+									{resendCooldown > 0
+										? `Resend in ${resendCooldown}s`
+										: "Resend OTP"}
+								</Text>
 							</TouchableOpacity>
 						</View>
 					</View>
@@ -183,6 +282,11 @@ const styles = StyleSheet.create({
 		fontSize: 15,
 		color: "#70777e",
 		marginBottom: 30,
+		lineHeight: 22,
+	},
+	emailHighlight: {
+		fontWeight: "600",
+		color: "#2b3034",
 	},
 	otpContainer: {
 		flexDirection: "row",
@@ -240,6 +344,9 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 		color: "#424649",
 		fontWeight: "700",
+	},
+	resendLinkDisabled: {
+		color: "#aab0b5",
 	},
 });
 

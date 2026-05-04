@@ -2,16 +2,16 @@ import axios from "axios";
 import { store } from "@/stores/store";
 
 const instance = axios.create({
-  baseURL: process.env.EXPO_PUBLIC_API_URL,
-  timeout: 10000,
-  headers: { "Content-Type": "application/json" },
+	baseURL: process.env.EXPO_PUBLIC_API_URL,
+	timeout: 10000,
+	headers: { "Content-Type": "application/json" },
 });
 
 instance.interceptors.request.use((config) => {
-  const token = store.getState().auth?.token;
-  // const token = process.env.EXPO_PUBLIC_TOKEN;
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
+	const token = store.getState().auth?.token;
+	// const token = process.env.EXPO_PUBLIC_TOKEN;
+	if (token) config.headers.Authorization = `Bearer ${token}`;
+	return config;
 });
 
 export default instance;
