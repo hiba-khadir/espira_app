@@ -16,7 +16,7 @@ export const getAllDevices = async (): Promise<Device[]> => {
 export const CreateDevices = async (
   payload: createPayload,
 ): Promise<Device> => {
-  const { data } = await instance.post<Device>("/api/devices");
+  const { data } = await instance.post<Device>("/api/devices", payload);
   return data;
 };
 export interface SuccessMessage {
@@ -29,7 +29,7 @@ export const updateDeviceState = async (
   const { data } = await instance.put<SuccessMessage>(
     `/api/devices/${id}/state`,
     {
-      isOn,
+      isOn: isOn,
     },
   );
   return data;
