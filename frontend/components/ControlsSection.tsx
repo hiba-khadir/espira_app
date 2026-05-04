@@ -2,47 +2,58 @@ import { colors } from "@/constants/colors";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { ToggleCard } from "./ToggleCard";
-
+import { Device } from "@/types/device";
+import { msToReadable } from "@/utils/metrics";
 interface ControlsSectionProps {
-  lightOn: boolean;
-  windowOn: boolean;
-  onLightToggle: (value: boolean) => void;
-  onWindowToggle: (value: boolean) => void;
+  devices: Device[];
+  onToggle: (id: number, isOn: boolean) => void;
 }
-
+const now = new Date();
 export const ControlsSection: React.FC<ControlsSectionProps> = ({
-  lightOn,
-  windowOn,
-  onLightToggle,
-  onWindowToggle,
+  devices,
+  onToggle,
 }) => (
   <View style={styles.sectionWrap}>
     <View style={styles.sectionHeader}>
       <Text style={styles.sectionTitle}>Cards</Text>
     </View>
     <View style={styles.cardsRow}>
-      <View style={styles.cardColumn}>
-        <ToggleCard
-          iconName="lightbulb-outline"
-          title="Light"
-          subtitle="UPDATED 3MIN AGO"
-          iconBg={colors.primaryContainer}
-          iconColor={colors.primary}
-          enabled={lightOn}
-          onToggle={onLightToggle}
-        />
-      </View>
-      <View style={styles.cardColumn}>
-        <ToggleCard
-          iconName="window"
-          title="Window"
-          subtitle="UPDATED 2 DAYS AGO"
-          iconBg={colors.secondaryContainer}
-          iconColor={colors.secondary}
-          enabled={windowOn}
-          onToggle={onWindowToggle}
-        />
-      </View>
+      {devices.length == 0 ? (
+        <Text className="text-center w-full  text-lime-600 capitalize">
+          no devices added yet
+        </Text>
+      ) : (
+        devices.map((device) => {
+          const isActuator = device.type == "actuator";
+          const lastUpdated =
+            isActuator && device.actuatorState?.lastUpdated
+              ? msToReadable(
+                  now.getTime() -
+                    new Date(device.actuatorState?.lastUpdated).getTime(),
+                )
+              : "not updated yet";
+          const isOn = device.actuatorState?.isOn ?? false;
+
+          const islight = device.name == "light";
+          return isActuator == true ? (
+            <View style={styles.cardColumn} key={device.id}>
+              <ToggleCard
+                iconName={islight ? "lightbulb-outline" : "window"}
+                title={device.name}
+                subtitle={`${lastUpdated}` || "not known"}
+                iconBg={
+                  islight ? colors.primaryContainer : colors.secondaryContainer
+                }
+                iconColor={islight ? colors.primary : colors.secondary}
+                enabled={isOn}
+                onToggle={(value) => onToggle(device.id, value)}
+              />
+            </View>
+          ) : (
+            ""
+          );
+        })
+      )}
     </View>
   </View>
 );
@@ -62,6 +73,8 @@ const styles = StyleSheet.create({
   },
   cardsRow: {
     flexDirection: "row",
+    gap: 6,
+    flexWrap: "wrap",
     justifyContent: "space-between",
   },
   cardColumn: {

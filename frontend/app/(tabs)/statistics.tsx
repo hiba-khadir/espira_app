@@ -1,5 +1,5 @@
 import { Text } from "@react-navigation/elements";
-
+import { useAppSelector } from "@/hooks/useAppDispatch";
 import React, { useState } from "react";
 import { Image } from "expo-image";
 import {
@@ -140,6 +140,17 @@ export function Container({
 }
 const SIZE = 280;
 export function Chart() {
+  const Devices = useAppSelector((s) => s.devices);
+  const lighting = Devices.devices.find((d) => d.name == "Lighting");
+  const lightingValue = lighting?.sensorState?.value || 0;
+  const soilMoisture = Devices.devices.find((d) => d.name == "soilMoisture");
+  const MoistureValue = soilMoisture?.sensorState?.value || 0;
+  const [sensor, setsensor] = useState(lighting);
+  const handleChange = () => {
+    if (sensor?.name == "Lighting") {
+      setsensor(soilMoisture);
+    } else setsensor(lighting);
+  };
   return (
     <Container title="Charts">
       <View>
@@ -147,8 +158,8 @@ export function Chart() {
           <View style={{ position: "relative" }}>
             <VictoryPie
               data={[
-                { x: "value", y: 70 },
-                { x: "empty", y: 30 },
+                { x: "value", y: lightingValue },
+                { x: "empty", y: 100 - lightingValue },
               ]}
               width={SIZE}
               height={SIZE}
@@ -168,8 +179,8 @@ export function Chart() {
             />
             <VictoryPie
               data={[
-                { x: "value", y: 20 },
-                { x: "empty", y: 80 },
+                { x: "value", y: MoistureValue },
+                { x: "empty", y: 100 - MoistureValue },
               ]}
               width={SIZE}
               height={SIZE}
@@ -187,38 +198,50 @@ export function Chart() {
               }}
               labels={() => null}
             />
-
-            <View
+            <TouchableOpacity
+              onPress={handleChange}
               style={{
                 position: "absolute",
                 top: 30,
-                left: -10,
+                left: 0,
                 right: 0,
                 bottom: 0,
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <Text style={{ fontSize: 16, fontWeight: "500", color: "#111" }}>
-                lighting
-              </Text>
-              <Text style={{ fontSize: 14, color: "#4caf7d", marginTop: 2 }}>
-                20%
-              </Text>
-            </View>
+              <View className="flex flex-col items-center">
+                <Text
+                  style={{ fontSize: 16, fontWeight: "500", color: "#111" }}
+                >
+                  {sensor?.name || "lighting"}
+                </Text>
+                <Text style={{ fontSize: 14, color: "#4caf7d", marginTop: 2 }}>
+                  {sensor?.sensorState?.value || 0}%
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
         <View style={[styles.legend, { marginInline: 10 }]}>
           <View style={[styles.legendRow, { gap: 10 }]}>
             <View style={[styles.dot, { backgroundColor: "#1a4a2a" }]} />
-            <Text style={styles.legendText}>Lighting</Text>
-            <Text style={styles.legendValue}>30%</Text>
+            <Text style={styles.legendText}>
+              {lighting?.name || "lighting"}
+            </Text>
+            <Text style={styles.legendValue}>
+              {lighting?.sensorState?.value || 0}%
+            </Text>
           </View>
           <View style={styles.Line} />
           <View style={[styles.legendRow, { gap: 10 }]}>
             <View style={[styles.dot, { backgroundColor: "#4caf7d" }]} />
-            <Text style={styles.legendText}>Moisture</Text>
-            <Text style={styles.legendValue}>50%</Text>
+            <Text style={styles.legendText}>
+              {soilMoisture?.name || "SoilMoisture"}
+            </Text>
+            <Text style={styles.legendValue}>
+              {soilMoisture?.sensorState?.value || 0}%
+            </Text>
           </View>
         </View>
       </View>
