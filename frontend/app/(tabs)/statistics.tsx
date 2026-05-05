@@ -146,7 +146,6 @@ export function Chart() {
   const soilMoisture = Devices.devices.find((d) => d.name == "soilMoisture");
   const MoistureValue = soilMoisture?.sensorState?.value || 0;
   const [sensor, setsensor] = useState(lighting);
-  console.log(soilMoisture);
   const handleChange = () => {
     if (sensor?.name == "lighting") {
       setsensor(soilMoisture);

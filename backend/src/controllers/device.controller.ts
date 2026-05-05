@@ -15,6 +15,7 @@ import { Request, Response } from "express";
 import { ConnectionStatus, DeviceType } from "../generated/prisma";
 import { mqttEvents } from "../services/mqtt/mqtt.index";
 import { publishCommandAndWait } from "../services/mqtt/mqtt.index";
+import { sendNotificationModel } from "../models/notif.model";
 
 // GET /api/devices
 const getAllDevicesController = async (
@@ -169,7 +170,6 @@ const updateDeviceStateController = async (
       res.status(404).json({ message: "Device not found" });
       return;
     }
-
     if (!device.controlTopic) {
       res.status(400).json({ message: "Device has no control topic" });
       return;
@@ -179,8 +179,11 @@ const updateDeviceStateController = async (
 
     await updateDeviceState(deviceId, userId, { isOn, intensity });
     await logDeviceHistory(deviceId, userId, isOn);
-
-    res.status(200).json({ message: "State updated" });
+    const notif = await sendNotificationModel(res, {
+      device: device.name,
+      state: isOn,
+    });
+    res.status(200).json({ message: "State updated", notif: notif });
   } catch (err: any) {
     //if timeout or device error mark as unavailable
     await updateConnectionStatus(deviceId, "error").catch(() => {});

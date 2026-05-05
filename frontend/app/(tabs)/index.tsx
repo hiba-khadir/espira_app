@@ -16,11 +16,8 @@ export default function App() {
   const handleToggle = async (deviceId: number, isOn: boolean) => {
     dispatch(updateActuatorState({ deviceId, isOn }));
     try {
-      console.log(deviceId, isOn);
-
       await updateDeviceState(deviceId, isOn);
     } catch (error) {
-      console.log(error);
       dispatch(updateActuatorState({ deviceId, isOn: !isOn }));
       Alert.alert("Failed to update device state  try again later ");
     }
@@ -32,7 +29,6 @@ export default function App() {
     const handle = async () => {
       try {
         const data = await getAllDevices();
-        console.log(data);
         if (data.length === 0) {
           const results = await AddDevices(Predevices);
           const failed = results.filter((r) => r.status === "rejected");

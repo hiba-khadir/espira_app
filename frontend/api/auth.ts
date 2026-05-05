@@ -1,10 +1,12 @@
 import { User } from "@/stores/slices/authSlice";
 import instance from "./instance";
 import { AuthState } from "@/stores/slices/authSlice";
+import { SuccessMessage } from "./device";
 export interface LoginPayload {
   email: string;
   password: string;
 }
+
 export interface RegisterPayload {
   name: string;
   email: string;
@@ -18,8 +20,8 @@ export interface AuthResponse {
   token: string;
 }
 
-export const loginAPI = async (payload: LoginPayload): Promise<User> => {
-  const { data } = await instance.post<User>("/api/authlogin", payload);
+export const loginAPI = async (payload: LoginPayload): Promise<AuthState> => {
+  const { data } = await instance.post<AuthState>("/api/authlogin", payload);
   return data;
 };
 
@@ -32,4 +34,26 @@ export const registerAPI = async (
 
 export const logoutAPI = async (): Promise<void> => {
   await instance.post("/api/authlogout");
+};
+
+export const SendOTP = async (email: string): Promise<SuccessMessage> => {
+  const { data } = await instance.post<SuccessMessage>(
+    "/api/auth/request-otp",
+    { email: email },
+  );
+  return data;
+};
+interface OtpResponse {
+  message: SuccessMessage;
+  token: string;
+}
+export const verifyOtp = async (
+  email: string | undefined,
+  otp: string,
+): Promise<OtpResponse> => {
+  const { data } = await instance.post<OtpResponse>("/api/auth/verify-otp", {
+    email: email,
+    otpCode: otp,
+  });
+  return data;
 };

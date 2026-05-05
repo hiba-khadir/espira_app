@@ -118,6 +118,7 @@ const updateDeviceState = async (
     where: { deviceId },
     data: { isOn, intensity, lastUpdated: new Date() },
   });
+
   return device;
 };
 
