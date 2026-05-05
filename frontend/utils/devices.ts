@@ -4,14 +4,14 @@ export const Predevices: createPayload[] = [
   {
     name: "window",
     type: "actuator",
-    stateTopic: "device/1/state",
-    controlTopic: "device/1/state",
+    stateTopic: "greenhouse/esp32/actuators/window/state",
+    controlTopic: "greenhouse/esp32/actuators/window/control",
   },
   {
     name: "light",
     type: "actuator",
-    stateTopic: "device/1/state",
-    controlTopic: "device/2/state",
+    stateTopic: "greenhouse/esp32/actuators/led/state",
+    controlTopic: "greenhouse/esp32/actuators/led/control",
   },
   {
     name: "lighting",
@@ -22,19 +22,19 @@ export const Predevices: createPayload[] = [
   {
     name: "humidity",
     type: "sensor",
-    stateTopic: "device/1/state",
+    stateTopic: "greenhouse/sensors/humidity/state",
     controlTopic: null,
   },
   {
     name: "soilMoisture",
     type: "sensor",
-    stateTopic: "device/4/state",
+    stateTopic: "greenhouse/sensors/soilMoisture/state",
     controlTopic: null,
   },
   {
     name: "temperature",
     type: "sensor",
-    stateTopic: "device/5/state",
+    stateTopic: "greenhouse/sensors/temperature/state",
     controlTopic: null,
   },
 ];
