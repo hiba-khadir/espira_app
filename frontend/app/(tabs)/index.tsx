@@ -16,11 +16,8 @@ export default function App() {
   const handleToggle = async (deviceId: number, isOn: boolean) => {
     dispatch(updateActuatorState({ deviceId, isOn }));
     try {
-      console.log(deviceId, isOn);
-
       await updateDeviceState(deviceId, isOn);
     } catch (error) {
-      console.log(error);
       dispatch(updateActuatorState({ deviceId, isOn: !isOn }));
       Alert.alert("Failed to update device state  try again later ");
     }
@@ -32,7 +29,6 @@ export default function App() {
     const handle = async () => {
       try {
         const data = await getAllDevices();
-        console.log(data);
         if (data.length === 0) {
           const results = await AddDevices(Predevices);
           const failed = results.filter((r) => r.status === "rejected");
@@ -46,7 +42,7 @@ export default function App() {
           dispatch(setDevices(data));
         }
       } catch (error) {
-        console.log(error);
+        Alert.alert("couldn't create devices at the moments ");
       }
     };
 
@@ -62,7 +58,7 @@ export default function App() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
-          <Header Username={User?.name || "maia"} />
+          <Header Username={User?.name || "maaa"} />
           <HeroCard Illustration={Illustration} />
           <MetricsSection metrics={metrics} />
           <ControlsSection devices={Devices.devices} onToggle={handleToggle} />
