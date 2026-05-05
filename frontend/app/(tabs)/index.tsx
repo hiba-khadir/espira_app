@@ -46,7 +46,7 @@ export default function App() {
           dispatch(setDevices(data));
         }
       } catch (error) {
-        console.log(error);
+        Alert.alert("couldn't create devices at the moments ");
       }
     };
 
@@ -61,7 +61,7 @@ export default function App() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
-          <Header Username={User?.name || "maia"} />
+          <Header Username={User?.name || "maaa"} />
           <HeroCard Illustration={Illustration} />
           <MetricsSection metrics={metrics} />
           <ControlsSection devices={Devices.devices} onToggle={handleToggle} />
