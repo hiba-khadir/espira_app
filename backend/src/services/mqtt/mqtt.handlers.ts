@@ -5,7 +5,7 @@ import { resolveCommand } from './mqtt.index';
 
 // handles confirmation or error msg from esp32
 async function handleActuatorConfirmation(deviceId: number, message: any) {
-  const success = message.status === 'ok';
+  const success = (message.status == 'ok');
 
   if (!success) {
     await updateConnectionStatus(deviceId, 'error');

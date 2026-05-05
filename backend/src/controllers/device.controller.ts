@@ -8,7 +8,6 @@ import {
   getDeviceState,
   updateDeviceState,
   getDeviceHistory,
-  getDeviceSubtype,
   logDeviceHistory,
 } from "../models/device.model";
 import { Request, Response } from "express";
@@ -175,8 +174,7 @@ const updateDeviceStateController = async (
       return;
     }
 
-    // await publishCommandAndWait(deviceId, device.controlTopic, { isOn, intensity});
-
+    await publishCommandAndWait(deviceId, device.controlTopic, { isOn, intensity});
     await updateDeviceState(deviceId, userId, { isOn, intensity });
     await logDeviceHistory(deviceId, userId, isOn);
 

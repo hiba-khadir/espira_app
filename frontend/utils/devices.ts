@@ -10,8 +10,8 @@ export const Predevices: createPayload[] = [
   {
     name: "light",
     type: "actuator",
-    stateTopic: null,
-    controlTopic: "device/2/state",
+    stateTopic: "greenhouse/esp32/actuators/led/state",
+    controlTopic: "greenhouse/esp32/actuators/led/control",
   },
   {
     name: "lighting",

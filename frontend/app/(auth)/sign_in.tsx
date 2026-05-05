@@ -136,13 +136,13 @@ const SignUpScreen = () => {
         name,
         email,
         password,
-        phoneNumber: "0541945730", // need to be removed from backend
+        phoneNumber: "0531940730", // need to be removed from backend
       });
       dispatch(setUser(response));
       router.push("/(tabs)/statistics");
     } catch (error) {
       console.log(error);
-      Alert.alert("Sign Up Failed", "An error occurred. Please try again.");
+      Alert.alert("Sign Up Failed", "An error occurre Please try again.");
       dispatch(setLoading(false));
     } finally {
       dispatch(setLoading(false));

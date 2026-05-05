@@ -96,6 +96,7 @@ function publishCommandAndWait(deviceId: number, topic: string, payload: object)
 }
 // called from handlers when confirmation arrives
 function resolveCommand(deviceId: number, success: boolean) {
+  console.log(`[mqtt] resolveCommand called for device ${deviceId}, exists in map:`, pendingCommands.has(deviceId));
   const pending = pendingCommands.get(deviceId);
   if (!pending) return;
   pendingCommands.delete(deviceId);

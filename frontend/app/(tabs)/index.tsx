@@ -51,7 +51,8 @@ export default function App() {
     };
 
     handle();
-  }, []);
+  }, [Devices.devices
+  ]);
 
   return (
     <SafeAreaView style={styles.screen}>

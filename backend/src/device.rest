@@ -35,10 +35,10 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "name": "Main Led Light",
+  "name": "led",
   "type": "actuator",
-  "stateTopic": "devices/1/state",
-  "controlTopic": "devices/1/control"
+  "stateTopic": "greenhouse/esp32/actuators/led/state",
+  "controlTopic": "greenhouse/esp32/actuators/led/control"
 }
 
 ###
@@ -99,13 +99,12 @@ Authorization: Bearer {{token}}
 ###
 
 ### PUT update device state :turn on
-PUT {{baseUrl}}/devices/2/state
+PUT {{baseUrl}}/devices/13/state
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "isOn": true,
-  "intensity": 80
+  "isOn": false
 }
 
 ###
