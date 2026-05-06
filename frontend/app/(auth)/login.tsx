@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { Image } from "expo-image";
 import { useAppDispatch, useAppSelector } from "../../hooks/useAppDispatch";
-import { setUser, setError, setLoading } from "@/stores/slices/authSlice";
+import {
+  setUser,
+  setError,
+  setLoading,
+  setToken,
+} from "@/stores/slices/authSlice";
+
 import { useRouter } from "expo-router";
 import {
   View,
@@ -64,9 +70,9 @@ const LoginScreen = () => {
     }
     dispatch(setLoading(true));
     try {
-      // const response = await loginAPI({ email, password });
-      // dispatch(setUser(response));
-      router.push("/(tabs)/statistics");
+      const response = await loginAPI({ email, password });
+      dispatch(setToken(response));
+      router.push("/(tabs)");
     } catch (error) {
       Alert.alert("Login Failed", "Invalid email or password");
       dispatch(setLoading(false));
