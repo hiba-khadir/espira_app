@@ -74,6 +74,7 @@ const LoginScreen = () => {
       dispatch(setToken(response));
       router.push("/(tabs)");
     } catch (error) {
+      console.log(error);
       Alert.alert("Login Failed", "Invalid email or password");
       dispatch(setLoading(false));
     } finally {

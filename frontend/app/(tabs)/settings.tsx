@@ -1,5 +1,6 @@
 import Header from "@/components/PageHeader";
-import { useAppSelector } from "@/hooks/useAppDispatch";
+import { useAppDispatch, useAppSelector } from "@/hooks/useAppDispatch";
+import { clearUser } from "@/stores/slices/authSlice";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
@@ -11,10 +12,16 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useDispatch } from "react-redux";
 
 export default function SettingsScreen() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const User = useAppSelector((s) => s.auth.user);
+  const handleLogout = () => {
+    dispatch(clearUser());
+    router.push("/(auth)/login");
+  };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FAFAFA" }}>
       <ScrollView contentContainerStyle={{ paddingBottom: 100 }} className="">
@@ -106,7 +113,10 @@ export default function SettingsScreen() {
           </View>
 
           {/* Logout */}
-          <TouchableOpacity className="w-full bg-[#4BAE4F] py-4 rounded-3xl items-center shadow-sm mt-4">
+          <TouchableOpacity
+            onPress={handleLogout}
+            className="w-full bg-[#065A2C] py-4 rounded-3xl items-center shadow-sm mt-4"
+          >
             <Text className="text-white font-bold text-lg">Logout</Text>
           </TouchableOpacity>
         </View>
