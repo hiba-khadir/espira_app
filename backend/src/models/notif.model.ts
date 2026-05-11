@@ -10,7 +10,7 @@ export const sendNotificationModel = async (
 ) => {
   const notification = `your ${payload.device} is  being turned ${payload.state == true ? "on" : "off"}`;
   if (res.statusCode === 200) {
-    return res.status(200).json({ message: "notification", notification });
+    return res.status(200).json({ message: notification });
   } else {
     return res.status(200).json({
       message: "notification",

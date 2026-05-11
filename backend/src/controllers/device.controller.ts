@@ -174,7 +174,10 @@ const updateDeviceStateController = async (
       return;
     }
 
-    await publishCommandAndWait(deviceId, device.controlTopic, { isOn, intensity});
+    await publishCommandAndWait(deviceId, device.controlTopic, {
+      isOn,
+      intensity,
+    });
     await updateDeviceState(deviceId, userId, { isOn, intensity });
     await logDeviceHistory(deviceId, userId, isOn);
     const notif = await sendNotificationModel(res, {

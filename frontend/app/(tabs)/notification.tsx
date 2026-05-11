@@ -109,7 +109,7 @@ export default function NotificationScreen() {
             ))
         )}
 
-        <Text
+        {/* <Text
           style={{
             fontSize: 14,
             fontWeight: "600",
@@ -120,7 +120,7 @@ export default function NotificationScreen() {
           }}
         >
           Yesterday
-        </Text>
+        </Text> */}
 
         {/* {notifications.length == 0 ? (
           <Text>no notification yet </Text>
