@@ -67,11 +67,10 @@ const OTPScreen = () => {
 
     setIsLoading(true);
     try {
-      await verifyOtp(User?.email, otpCode);
-      router.push("/(tabs)")
+      const verify = await verifyOtp(User?.email, otpCode);
+      router.push("/(tabs)");
     } catch (error) {
       Alert.alert(" couldn't verify otp , please enter valid   ");
-      console.error(error);
     } finally {
       setIsLoading(false);
     }

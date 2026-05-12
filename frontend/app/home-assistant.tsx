@@ -41,7 +41,7 @@ export default function HomeAssistantScreen() {
           dashboard.
         </Text>
         <TouchableOpacity
-          className="w-full bg-[#4BAE4F] py-4 rounded-3xl items-center shadow-sm flex-row justify-center"
+          className="w-full bg-[#065A2C] py-4 rounded-3xl items-center shadow-sm flex-row justify-center"
           onPress={openDashboard}
         >
           <Text className="text-white font-bold text-lg mr-2">

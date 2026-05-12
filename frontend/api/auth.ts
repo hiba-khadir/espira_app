@@ -2,6 +2,7 @@ import { User } from "@/stores/slices/authSlice";
 import instance from "./instance";
 import { AuthState } from "@/stores/slices/authSlice";
 import { SuccessMessage } from "./device";
+import { TokenPayload } from "@/stores/slices/authSlice";
 export interface LoginPayload {
   email: string;
   password: string;
@@ -20,8 +21,13 @@ export interface AuthResponse {
   token: string;
 }
 
-export const loginAPI = async (payload: LoginPayload): Promise<AuthState> => {
-  const { data } = await instance.post<AuthState>("/api/auth/login", payload);
+export const loginAPI = async (
+  payload: LoginPayload,
+): Promise<TokenPayload> => {
+  const { data } = await instance.post<TokenPayload>(
+    "/api/auth/login",
+    payload,
+  );
   return data;
 };
 

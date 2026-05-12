@@ -11,12 +11,19 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useAppDispatch";
 import { AddDevices } from "@/api/device";
 import { Predevices } from "@/utils/devices";
 import { devicesToMetrics } from "@/utils/metrics";
+import { setNotif, updateNotif } from "@/stores/slices/notifSlice";
 export default function App() {
   const dispatch = useAppDispatch();
+  const notifs = useAppSelector((state) => state.notifications.message);
   const handleToggle = async (deviceId: number, isOn: boolean) => {
     dispatch(updateActuatorState({ deviceId, isOn }));
     try {
-      await updateDeviceState(deviceId, isOn);
+      const msg = await updateDeviceState(deviceId, isOn);
+      if (notifs.length == 0) {
+        dispatch(setNotif([`${msg.message}`]));
+      } else {
+        dispatch(updateNotif({ newMessage: msg.message }));
+      }
     } catch (error) {
       dispatch(updateActuatorState({ deviceId, isOn: !isOn }));
       Alert.alert("Failed to update device state  try again later ");
@@ -47,8 +54,7 @@ export default function App() {
     };
 
     handle();
-  }, [Devices.devices
-  ]);
+  }, [Devices.devices]);
 
   return (
     <SafeAreaView style={styles.screen}>
