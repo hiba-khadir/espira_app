@@ -111,5 +111,5 @@ export async function loginModel(email: string, password: string) {
   if (!passwordMatch) throw new Error('INVALID_CREDENTIALS');
 
   const token = generateAccessToken(user.id);
-  return { token };
+  return { token, user  };
 }

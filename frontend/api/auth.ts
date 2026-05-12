@@ -21,7 +21,7 @@ export interface AuthResponse {
 }
 
 export const loginAPI = async (payload: LoginPayload): Promise<AuthState> => {
-  const { data } = await instance.post<AuthState>("/api/authlogin", payload);
+  const { data } = await instance.post<AuthState>("/api/auth/login", payload);
   return data;
 };
 

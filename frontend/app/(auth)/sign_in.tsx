@@ -136,7 +136,7 @@ const SignUpScreen = () => {
         name,
         email,
         password,
-        phoneNumber: "0531940730", // need to be removed from backend
+        phoneNumber: "0531840730", // need to be removed from backend
       });
       dispatch(setUser(response));
 
