@@ -160,4 +160,3 @@ eas build -p ios --profile preview
 FRONTEND_URL=http://YOUR_LOCAL_IP:8081
 EXPO_PUBLIC_API_URL=http://YOUR_LOCAL_IP:3000
 ```
-```
