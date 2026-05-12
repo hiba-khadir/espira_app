@@ -153,6 +153,7 @@ eas build -p ios --profile preview
 ### Step 2: Install Build
 - Download the APK (Android) or IPA (iOS)
 - Install it on your device
+- Scan previous QR code with app 
 
 ### Step 3: Configure Environment
 
