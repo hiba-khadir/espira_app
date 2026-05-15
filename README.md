@@ -1,10 +1,10 @@
-# Espira – Smart Greenhouse Management App
+# Espira : a Smart Greenhouse Control App
 
 Espira is an interactive mobile application designed to simplify and automate greenhouse management. It enables users to monitor, control, and optimize greenhouse conditions remotely in real time.
 
 ---
 
-## Key Features
+## Features
 
 ### Automatic Device Integration
 Connected sensors and smart devices are automatically  added to the system after setup.
