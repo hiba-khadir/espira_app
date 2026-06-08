@@ -72,6 +72,10 @@ function subscribeToDevice(device: { stateTopic: string; controlTopic?: string |
   //subscribing to state topics
   console.log(`[mqtt] Subscribing to: ${device.stateTopic}`);
   client.subscribe(device.stateTopic);
+  if (device.controlTopic) {
+    console.log(`[mqtt] Subscribing to: ${device.controlTopic}`);
+    client.subscribe(device.controlTopic);
+  }
 }
 
 // map of deviceId : { resolve, reject }  commands waiting for confirmation
