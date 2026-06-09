@@ -2,10 +2,10 @@
 import { createPayload } from "@/api/device";
 export const Predevices: createPayload[] = [
   {
-    name: "window",
+    name: "fan",
     type: "actuator",
-    stateTopic: "greenhouse/esp32/actuators/window/state",
-    controlTopic: "greenhouse/esp32/actuators/window/control",
+    stateTopic: "greenhouse/esp32/actuators/fan/state",
+    controlTopic: "greenhouse/esp32/actuators/fan/control",
   },
   {
     name: "light",
@@ -16,7 +16,7 @@ export const Predevices: createPayload[] = [
   {
     name: "lighting",
     type: "sensor",
-    stateTopic: "device/3/state",
+    stateTopic: "greenhouse/sensors/led/state",
     controlTopic: null,
   },
   {

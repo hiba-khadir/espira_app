@@ -40,7 +40,6 @@ const authSlice = createSlice({
     },
     setToken(state, action: PayloadAction<TokenPayload>) {
       state.token = action.payload.token;
-      state.message = action.payload.message;
     },
     clearUser(state) {
       state.user = null;

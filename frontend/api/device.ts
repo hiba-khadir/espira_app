@@ -40,6 +40,17 @@ export const getDeviceHistory = async (id: string): Promise<DeviceHistory> => {
   );
   return data;
 };
+
+export const getDeviceUsage = async (deviceId: number) => {
+  try {
+    const { data } = await instance.get(`/api/devices/${deviceId}/usage`);
+    return data;
+  } catch (error: any) {
+    console.log(`device ${deviceId} error:`, error.response?.data);
+    throw error;
+  }
+};
+
 // add devices after logging in automatically (user can't )
 export const AddDevices = async (
   devices: createPayload[],
@@ -50,3 +61,6 @@ export const AddDevices = async (
 
   return Promise.allSettled(devicePromises);
 };
+
+// add devices after logging in automatically (user can't )
+export const getSensorHistory = async () => {};

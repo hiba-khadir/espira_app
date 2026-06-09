@@ -1,6 +1,7 @@
 import { Text } from "@react-navigation/elements";
 import { useAppSelector } from "@/hooks/useAppDispatch";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { getDeviceUsage } from "@/api/device";
 import { Image } from "expo-image";
 import {
   Platform,
@@ -21,22 +22,22 @@ import ParallaxScrollView from "@/components/parallax-scroll-view";
 import calendarEvent from "@/components/ui/calendar";
 
 const months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
+  "9",
+  "10",
+  "11",
+  "12",
+  "13",
+  "14",
+  "15",
+  "16",
+  "17",
+  "18",
+  "19",
+  "20",
 ];
 
-const humidity = [28, 32, 25, 30, 45, 60, 90, 150, 145, 110, 80, 120];
-const temperature = [0, 8, 20, 45, 80, 100, 115, 130, 175, 200, 215, 225];
+const humidity = [8, 3, 15, 10, 15, 10, 10, 10, 15, 10, 10, 12];
+const temperature = [0, 23, 21, 25, 20, 30, 25, 20, 25, 20, 15, 25];
 
 const hData = months.map((m, i) => ({ x: m, y: humidity[i] }));
 const tData = months.map((m, i) => ({ x: m, y: temperature[i] }));
@@ -58,7 +59,7 @@ export function Graphs() {
 
           <TouchableOpacity style={styles.datePill}>
             {calendarEvent()}
-            <Text style={styles.datePillText}>Jan 2026 – Dec 2026</Text>
+            <Text style={styles.datePillText}>June 09, 2026</Text>
           </TouchableOpacity>
         </View>
 
@@ -293,10 +294,45 @@ function ProgressBar({
   );
 }
 export function DailyUsage() {
+  const { devices } = useAppSelector((s) => s.devices);
+  const [usageMap, setUsageMap] = useState<Record<number, number>>({});
+  useEffect(() => {
+    const fetchAll = async () => {
+      const results = await Promise.allSettled(
+        devices.map((d) => getDeviceUsage(d.id)),
+      );
+      const map: Record<number, number> = {};
+      results.forEach((result, i) => {
+        if (result.status === "fulfilled" && result.value) {
+          map[devices[i].id] = parseFloat(
+            (result.value.totalMinutesUsed / 60).toFixed(1),
+          );
+        }
+      });
+      setUsageMap(map);
+    };
+
+    if (devices.length) fetchAll();
+  }, [devices]);
   return (
     <Container title="daily usage ">
-      <ProgressBar label="Light" value={15} total={24} hours={15} />
-      <ProgressBar label="Window" value={20} total={24} hours={20} />
+      {devices
+        .filter(
+          (device) =>
+            usageMap[device.id] !== undefined && device.type == "actuator",
+        )
+        .map((device) => {
+          const hoursUsed = usageMap[device.id];
+          return (
+            <ProgressBar
+              key={device.id}
+              label={device.name}
+              value={hoursUsed}
+              total={24}
+              hours={hoursUsed}
+            />
+          );
+        })}
     </Container>
   );
 }

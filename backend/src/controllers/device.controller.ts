@@ -5,6 +5,7 @@ import {
   updateDevice,
   updateConnectionStatus,
   deleteDevice,
+  getDeviceUsage,
   getDeviceState,
   updateDeviceState,
   getDeviceHistory,
@@ -174,10 +175,10 @@ const updateDeviceStateController = async (
       return;
     }
 
-    await publishCommandAndWait(deviceId, device.controlTopic, {
-      isOn,
-      intensity,
-    });
+    // await publishCommandAndWait(deviceId, device.controlTopic, {
+    //   isOn,
+    //   intensity,
+    // });
     await updateDeviceState(deviceId, userId, { isOn, intensity });
     await logDeviceHistory(deviceId, userId, isOn);
     const notif = await sendNotificationModel(res, {
@@ -212,11 +213,32 @@ const getDeviceHistoryController = async (
   }
 };
 
+const getDeviceUsageController = async (req: Request, res: Response) => {
+  try {
+    const deviceId = req.params.id as string;
+    const userId = req.user.id;
+
+    if (!deviceId) {
+      return res.status(400).json({ message: "deviceId is required" });
+    }
+
+    const usage = await getDeviceUsage(parseInt(deviceId), userId);
+
+    if (!usage) {
+      return res.status(404).json({ message: "Device not found" });
+    }
+
+    return res.status(200).json(usage);
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error", error });
+  }
+};
 export {
   getAllDevicesController,
   getDeviceByIdController,
   createDeviceController,
   updateDeviceController,
+  getDeviceUsageController,
   deleteDeviceController,
   getDeviceStateController,
   updateDeviceStateController,

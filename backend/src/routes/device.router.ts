@@ -1,19 +1,26 @@
 import {
-  getAllDevicesController,createDeviceController,getDeviceByIdController,updateDeviceController,
-  deleteDeviceController,getDeviceStateController,updateDeviceStateController,getDeviceHistoryController,
-} from '../controllers/device.controller.js'
+  getAllDevicesController,
+  createDeviceController,
+  getDeviceByIdController,
+  updateDeviceController,
+  deleteDeviceController,
+  getDeviceStateController,
+  getDeviceUsageController,
+  updateDeviceStateController,
+  getDeviceHistoryController,
+} from "../controllers/device.controller.js";
 
-import express from 'express';
+import express from "express";
 
 const router = express.Router();
 
-router.get('/', getAllDevicesController)
-router.post('/',createDeviceController)
-router.get('/:id', getDeviceByIdController)
-router.put('/:id',  updateDeviceController)
-router.delete('/:id', deleteDeviceController)
-router.get('/:id/state', getDeviceStateController)
-router.put('/:id/state', updateDeviceStateController)
-router.get('/:id/history',  getDeviceHistoryController)
-
+router.get("/", getAllDevicesController);
+router.post("/", createDeviceController);
+router.get("/:id", getDeviceByIdController);
+router.put("/:id", updateDeviceController);
+router.delete("/:id", deleteDeviceController);
+router.get("/:id/state", getDeviceStateController);
+router.put("/:id/state", updateDeviceStateController);
+router.get("/:id/history", getDeviceHistoryController);
+router.get("/:id/usage", getDeviceUsageController);
 export default router;

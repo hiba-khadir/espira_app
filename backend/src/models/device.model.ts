@@ -212,12 +212,76 @@ const recordSensorReading = async (deviceId: number, value: number) => {
   ]);
 };
 
+const getDeviceUsage = async (deviceId: number, userId: string) => {
+  const device = await prisma.device.findFirst({
+    where: { id: deviceId, userId },
+    select: {
+      deviceHistories: {
+        orderBy: { recordedAt: "asc" },
+        select: {
+          id: true,
+          actionType: true,
+          recordedAt: true,
+        },
+      },
+    },
+  });
+
+  if (!device) return null;
+
+  const histories = device.deviceHistories;
+  const sessions: {
+    turnedOnAt: Date;
+    turnedOffAt: Date | null;
+    durationMinutes: number | null;
+  }[] = [];
+
+  for (let i = 0; i < histories.length; i++) {
+    const current = histories[i];
+
+    if (current.actionType === "turned_on") {
+      // Find the next turned_off event after this turned_on
+      const nextOff = histories
+        .slice(i + 1)
+        .find((h) => h.actionType === "turned_off");
+
+      const turnedOffAt = nextOff?.recordedAt ?? null;
+      const durationMinutes = turnedOffAt
+        ? (turnedOffAt.getTime() - current.recordedAt.getTime()) / 1000 / 60
+        : null; // null means device is still ON
+
+      sessions.push({
+        turnedOnAt: current.recordedAt,
+        turnedOffAt,
+        durationMinutes: durationMinutes
+          ? parseFloat(durationMinutes.toFixed(2))
+          : null,
+      });
+    }
+  }
+
+  // Aggregate totals
+  const completedSessions = sessions.filter((s) => s.durationMinutes !== null);
+
+  return {
+    deviceId,
+    totalSessions: completedSessions.length,
+    totalMinutesUsed: parseFloat(
+      completedSessions
+        .reduce((sum, s) => sum + (s.durationMinutes ?? 0), 0)
+        .toFixed(2),
+    ),
+    currentlyOn: sessions[sessions.length - 1]?.turnedOffAt === null,
+    sessions,
+  };
+};
 export {
   getAllDevices,
   getDeviceById,
   createDevice,
   updateDevice,
   deleteDevice,
+  getDeviceUsage,
   getDeviceState,
   updateDeviceState,
   getDeviceHistory,
