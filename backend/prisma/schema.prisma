@@ -42,7 +42,7 @@ model Device {
   connectionStatus ConnectionStatus @default(unavailable) @map("connection_status")
   lastSeen         DateTime? @map("last_seen")
   userId           String?   @map("user_id")
-  user             User?     @relation(fields: [userId], references: [id])
+  user             User?     @relation(fields: [userId], references: [id] ,onDelete: Cascade)
   actuatorState    ActuatorState?
   sensorState      SensorState?
   deviceHistories  DeviceHistory[]
